@@ -1,0 +1,23 @@
+running develop
+running egg_info
+creating vehicle_controller.egg-info
+writing vehicle_controller.egg-info/PKG-INFO
+writing dependency_links to vehicle_controller.egg-info/dependency_links.txt
+writing entry points to vehicle_controller.egg-info/entry_points.txt
+writing requirements to vehicle_controller.egg-info/requires.txt
+writing top-level names to vehicle_controller.egg-info/top_level.txt
+writing manifest file 'vehicle_controller.egg-info/SOURCES.txt'
+reading manifest file 'vehicle_controller.egg-info/SOURCES.txt'
+writing manifest file 'vehicle_controller.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/tahir/midterm_project/src/install/vehicle_controller/lib/python3.10/site-packages/vehicle-controller.egg-link (link to .)
+Installing imu_logger script to /home/tahir/midterm_project/src/install/vehicle_controller/lib/vehicle_controller
+Installing self_control script to /home/tahir/midterm_project/src/install/vehicle_controller/lib/vehicle_controller
+
+Installed /home/tahir/midterm_project/src/build/vehicle_controller
+running symlink_data
+creating /home/tahir/midterm_project/src/install/vehicle_controller/share/ament_index
+creating /home/tahir/midterm_project/src/install/vehicle_controller/share/ament_index/resource_index
+creating /home/tahir/midterm_project/src/install/vehicle_controller/share/ament_index/resource_index/packages
+symbolically linking /home/tahir/midterm_project/src/build/vehicle_controller/resource/vehicle_controller -> /home/tahir/midterm_project/src/install/vehicle_controller/share/ament_index/resource_index/packages
+symbolically linking /home/tahir/midterm_project/src/build/vehicle_controller/package.xml -> /home/tahir/midterm_project/src/install/vehicle_controller/share/vehicle_controller
