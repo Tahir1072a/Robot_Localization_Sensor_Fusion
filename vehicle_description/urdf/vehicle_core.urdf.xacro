@@ -55,13 +55,13 @@
     <joint name="imu_joint_2" type="fixed">
         <parent link="vehicle_body"/>
         <child link="imu2_link"/>
-        <origin xyz="0 0 ${(body_height / 2) + 0.01 + wheel_radius}"/>
+        <origin xyz="0 0 ${(body_height / 2) + 0.01 + wheel_radius}" rpy="0 0 0"/>
     </joint>
     
     <joint name="imu_joint_3" type="fixed">
         <parent link="vehicle_body"/>
         <child link="imu3_link"/>
-        <origin xyz="${-0.05} 0 ${(body_height / 2) + 0.01 + wheel_radius}"/>
+        <origin xyz="${-0.05} 0 ${(body_height / 2) + 0.01 + wheel_radius}" rpy="0 0 0"/>
     </joint>
     
 </robot>

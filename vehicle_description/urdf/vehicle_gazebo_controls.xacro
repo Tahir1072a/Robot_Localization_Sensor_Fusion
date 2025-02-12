@@ -3,7 +3,7 @@
 <robot name="vehicle" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <!-- Donanım ile etkileşime geçen kısmı ayarladığımız nokta !! -->
-    <ros2_control name="VehicleSystem" type="system" >
+    <ros2_control name="RobotSystem" type="system" >
     
         <hardware>
             <plugin>ign_ros2_control/IgnitionSystem</plugin>

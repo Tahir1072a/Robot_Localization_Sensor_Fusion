@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 import time
+import random
 
 from rclpy.node import Node
 
@@ -14,8 +15,8 @@ class SelfControl(Node):
 
         self.odom_sub = self.create_subscription(Odometry, "/diff_drive_robot_controller/odom", self.odom_callback, 10)
 
-        self.speed = 1.0
-        self.distance_to_travel = 2.0
+        self.speed = 5.5
+        self.distance_to_travel = 10.0
         self.current_distance = 0.0
         self.start_position = None
         self.is_moving_forward = True

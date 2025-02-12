@@ -75,12 +75,9 @@ class ImuLogger(Node):
             if imu_id == "pose":
                 pass
                 pose_data = data[imu_id]
-                #self.get_logger().info("------------------------------DEBUG----------------------------------")
-                #self.get_logger().info(str(pose_data["pose_x"]))
                 data_str += f"{pose_data['pose_x']:<15.12f}, {pose_data['pose_y']:<15.12f}, {pose_data['pose_z']:<15.12f}"
             else: 
                 imu_data = data[imu_id]
-                self.get_logger().info(str(imu_data))
                 data_str += f"{imu_data['ax']:<15.12f}, {imu_data['ay']:<15.12f}, {imu_data['az']:<15.12f}, {imu_data['gx']:<15.12f}, {imu_data['gy']:<15.12f}, {imu_data['gz']:<15.12f}, "
         
         data_str = data_str.rstrip(", ") + "\n"
