@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+
+<robot name="vehicle" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- WHEEL PROPERTIES-->
+    <xacro:property name="wheel_radius" value="0.1"/>
+    <xacro:property name="wheel_length" value="0.05" />
+    <xacro:property name="wheel_mass" value="0.5" /> 
+    <xacro:property name="caster_wheel_radius" value="0.1" />
+    <xacro:property name="caster_wheel_mass" value="0.5"/>
+
+    <!-- Vehicle Body Parameters -->
+    <xacro:property name="body_width"  value="0.6" />
+    <xacro:property name="body_depth"  value="0.5" />
+    <xacro:property name="body_height" value="0.2" />
+    <xacro:property name="body_mass" value="2" />
+ 
+    <xacro:macro name="wheel" params="prefix">
+        <link name="${prefix}_wheel">
+            <visual>
+                <origin xyz="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+                </geometry>
+                <material name="black"/>
+            </visual>
+
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+                </geometry>
+            </collision>
+
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="${wheel_mass}" />
+                <inertia ixx="${(1 / 12) * ((3 * wheel_radius * wheel_radius) + (wheel_length * wheel_length))}" 
+                         iyy="${(1 / 12) * ((3 * wheel_radius * wheel_radius) + (wheel_length * wheel_length))}"
+                         izz="${(1 / 2) * (wheel_radius * wheel_radius)}"
+                         ixy = "0" ixz="0" iyz="0" iyx="0" izx="0" izy="0"
+                />
+            </inertial>
+        </link>
+
+    </xacro:macro>
+
+    <xacro:macro name="caster_wheel" params="prefix">
+        <link name="${prefix}_caster_wheel">
+            <visual>
+                <origin xyz="0 0 0"/>
+                <geometry>
+                    <sphere radius="${caster_wheel_radius}"/>
+                </geometry>
+                <material name="black"/>
+            </visual>
+
+            <collision>
+                <origin xyz="0 0 0"/>
+                <geometry>
+                    <sphere radius="${caster_wheel_radius}"/>
+                </geometry>
+            </collision>
+
+            <inertial>
+                <origin xyz="0 0 0"/>
+                <mass value="${caster_wheel_mass}" />
+                <inertia ixx="${(2 / 5) * (caster_wheel_mass * caster_wheel_radius * caster_wheel_radius)}" 
+                         iyy="${(2 / 5) * (caster_wheel_mass * caster_wheel_radius * caster_wheel_radius)}"
+                         izz="${(2 / 5) * (caster_wheel_mass * caster_wheel_radius * caster_wheel_radius)}"
+                         ixy = "0" ixz="0" iyz="0" iyx="0" izx="0" izy="0"
+                />
+            </inertial>
+        </link>
+
+    </xacro:macro>
+
+    <xacro:macro name="vehicle_body">
+        <link name="vehicle_body">
+            <visual>
+                <origin xyz ="0 0 ${wheel_radius}" />
+                <geometry>
+                    <box size="${body_width} ${body_depth} ${body_height}"/>
+                </geometry>
+                <material name="red"/>
+            </visual>
+            
+            <collision>
+                <origin xyz ="0 0 ${wheel_radius}" />
+                <geometry>
+                     <box size="${body_width} ${body_depth} ${body_height}"/>
+                </geometry>
+            </collision>
+
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="${body_mass}"/>
+                <inertia ixx="${(1 / 12) * body_mass * (body_height * body_height + body_depth * body_depth)}" 
+                        iyy="${(1 / 12) * body_mass * (body_height * body_height + body_width * body_width)}"
+                        izz="${(1 / 12) * body_mass * (body_width * body_width + body_depth * body_depth)}"
+                        ixy = "0" ixz="0" iyz="0" iyx="0" izx="0" izy="0"
+                />
+            </inertial>
+        </link>
+    </xacro:macro>
+
+    
+    <xacro:macro name="imu" params="prefix">
+        <link name="${prefix}_link">
+            <visual>
+                <origin xyz="0 0 0"/>
+                <geometry>
+                    <box size="0.05 0.05 0.02"/>
+                </geometry>
+                <material name="silver" />
+            </visual>
+
+            <collision>
+                <origin xyz="0 0 0"/>
+                <geometry>
+                    <box size="0.05 0.05 0.02"/>
+                </geometry>
+            </collision>
+
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <mass value="0.1" />
+                <inertia ixx="${(1 / 12) * 0.4 * (0.05 * 0.05 + 0.02 * 0.02)}"
+                         iyy="${(1 / 12) * 0.4 * (0.05 * 0.05 + 0.02 * 0.02)}"
+                         izz="${(1 / 12) * 0.4 * (0.05 * 0.05 + 0.05 * 0.05)}"
+                         ixy="0" ixz="0" iyz="0" iyx="0" izx="0" izy="0"
+                />
+            </inertial>
+        </link>
+
+        <gazebo reference="${prefix}_link">
+            <sensor name="${prefix}" type="imu">
+                <always_on>true</always_on>
+                <update_rate>100</update_rate>
+                <gz_frame_id>${prefix}_link</gz_frame_id>
+                <topic>${prefix}</topic>
+            </sensor>
+        </gazebo>
+
+    </xacro:macro>
+    
+
+    <material name="blue">
+        <color rgba="0 0 1 1"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
+
+    <material name="silver">
+        <color rgba="0.79 0.82 0.93 1" />
+    </material>
+
+    <material name="red">
+        <color rgba="1 0 0 1" />
+    </material>
+
+</robot>
