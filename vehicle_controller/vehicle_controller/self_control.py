@@ -15,8 +15,8 @@ class SelfControl(Node):
 
         self.odom_sub = self.create_subscription(Odometry, "/diff_drive_robot_controller/odom", self.odom_callback, 10)
 
-        self.speed = 2.0
-        self.distance_to_travel = 5.0
+        self.speed = 1.5
+        self.distance_to_travel = 3.0
         self.current_distance = 0.0
         self.start_position = None
         self.is_moving_forward = True

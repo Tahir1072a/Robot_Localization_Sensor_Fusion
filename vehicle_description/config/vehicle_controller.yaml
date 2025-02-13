@@ -2,7 +2,7 @@
 controller_manager:
   ros__parameters:
     update_rate: 100
-    use_sim_time: True
+    use_sim_time: true
 
     diff_drive_robot_controller:
       type: diff_drive_controller/DiffDriveController
@@ -17,7 +17,7 @@ diff_drive_robot_controller:
     left_wheel_names: ["rear_left_wheel_joint"]
     right_wheel_names: ["rear_right_wheel_joint"]
 
-    publish_rate: 50.0
+    publish_rate: 100.0
     pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
 
@@ -27,7 +27,7 @@ diff_drive_robot_controller:
     wheel_separation_multiplier: 1.0
     left_wheel_radius_multiplier: 1.0
     right_wheel_radius_multiplier: 1.0
-
+    # Bu süre boyunca herhangi bir komut gelmesse motorları durdur!
     cmd_vel_timeout: 0.5
     base_frame_id: base_footprint
     publish_limited_velocity: true
@@ -37,11 +37,11 @@ diff_drive_robot_controller:
     linear:
       x:
         has_velocity_limits: true
-        max_velocity: 10.4
-        min_velocity: -10.4
+        max_velocity: 5.0
+        min_velocity: -5.0
         has_acceleration_limits: true
-        max_acceleration: 2.0
-        min_acceleration: -2.0
+        max_acceleration: 3.0
+        min_acceleration: -3.0
         has_jerk_limits: false
         max_jerk: 5.0
     angular:

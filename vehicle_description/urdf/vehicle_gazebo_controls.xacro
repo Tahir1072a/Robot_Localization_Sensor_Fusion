@@ -3,16 +3,19 @@
 <robot name="vehicle" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <!-- Donanım ile etkileşime geçen kısmı ayarladığımız nokta !! -->
-    <ros2_control name="RobotSystem" type="system" >
-    
+    <ros2_control name="DiffSystem" type="system" >
+        <!-- use mock hardware gerçek bir robota yükleme yaparken kullanılır! -->
         <hardware>
             <plugin>ign_ros2_control/IgnitionSystem</plugin>
+            <!-- Donanımın default başlatma-durdurma süresini belirleriz -->
+            <param name="example_param_hw_start_duration_sec">0</param>
+            <param name="example_param_hw_stop_duration_sec">3.0</param>
         </hardware>
 
         <joint name="rear_right_wheel_joint">
             <command_interface name="velocity">
-                <param name="min">-2</param>
-                <param name="max">2</param>
+                <param name="min">-1</param>
+                <param name="max">1</param>
             </command_interface>
             <state_interface name="position" />
             <state_interface name="velocity" />
@@ -20,8 +23,8 @@
 
         <joint name="rear_left_wheel_joint">
             <command_interface name="velocity">
-                <param name="min">-2</param>
-                <param name="max">2</param>
+                <param name="min">-1</param>
+                <param name="max">1</param>
             </command_interface>
             <state_interface name="position" />
             <state_interface name="velocity" />

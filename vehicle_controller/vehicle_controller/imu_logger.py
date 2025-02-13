@@ -3,8 +3,8 @@ import rclpy
 import subprocess
 
 from rclpy.node import Node
-from threading import Lock
-from collections import deque #defaultdict ile optimize çalışması yapılacak...
+from threading import Lock, Thread
+from queue import Queue
 
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Imu
@@ -21,7 +21,10 @@ class ImuLogger(Node):
 
         self.buffer = {}
         self.buffer_lock = Lock()
-        self.timestamp_arr = deque(maxlen=1000)
+        self.queue = Queue()
+            
+        self.w_thread = Thread(target=self.write_to_file, daemon=True)
+        self.w_thread.start()
 
         self.imu1_sub = self.create_subscription(Imu, "/imu1", lambda msg: self.imu_sub_callback(msg, "imu1"), 30)
         self.imu2_sub = self.create_subscription(Imu, "/imu2", lambda msg: self.imu_sub_callback(msg, "imu2"), 30)
@@ -33,8 +36,7 @@ class ImuLogger(Node):
         current_pos = msg.pose.pose.position
         timestamp = self.get_timestamp(msg)
 
-        if timestamp not in self.timestamp_arr:
-            self.timestamp_arr.append(timestamp)
+        if self.buffer.get(timestamp) is None:
             self.buffer[timestamp] = {}
 
 
@@ -48,8 +50,7 @@ class ImuLogger(Node):
     def imu_sub_callback(self, msg, imu_id):
         timestamp = self.get_timestamp(msg)
 
-        if timestamp not in self.timestamp_arr:
-            self.timestamp_arr.append(timestamp)
+        if self.buffer.get(timestamp) is None:
             self.buffer[timestamp] = {}
 
         #self.get_logger().info("-----------------------------DEBUG-------------------------------")
@@ -68,13 +69,10 @@ class ImuLogger(Node):
                 "gz": msg.angular_velocity.z,
             }
         
-        if "pose" in self.buffer[timestamp] and all(imu in self.buffer[timestamp] for imu in ["imu1", "imu2", "imu3"]):
-            self.write_to_file(timestamp)
-            
-            with self.buffer_lock:
-                del self.buffer[timestamp]
+        if len(self.buffer[timestamp]) == 4:
+            self.prepare_data(timestamp)
     
-    def write_to_file(self, timestamp):
+    def prepare_data(self, timestamp):
         data = self.buffer[timestamp]
 
         data_str = f"{timestamp:<15} "
@@ -88,8 +86,19 @@ class ImuLogger(Node):
                 data_str += f"{imu_data['ax']:<15.12f}, {imu_data['ay']:<15.12f}, {imu_data['az']:<15.12f}, {imu_data['gx']:<15.12f}, {imu_data['gy']:<15.12f}, {imu_data['gz']:<15.12f} "
         
         data_str = data_str.rstrip() + "\n"
-        self.imu_file.write(data_str)
-        self.imu_file.flush()
+
+        with self.buffer_lock:
+            self.queue.put(data_str)
+            del self.buffer[timestamp]
+
+    def write_to_file(self):
+        while True:
+            try:
+                data_str = self.queue.get()
+                self.imu_file.write(data_str)
+                self.imu_file.flush()
+            except:
+                continue
     
     def get_timestamp(self, msg):
         timestamp_nano = msg.header.stamp.nanosec
