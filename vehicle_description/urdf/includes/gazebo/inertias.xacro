@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+     <!-- Inertia Equations -->
+     <!-- https://bit.ly/2S0aK32 -->
+    
+    <xacro:macro name="solid_cuboid_inertia" params="mass x y z">
+        <inertial>
+            <mass value="${mass}"/>
+            <inertia ixx="${mass * (y * y + z * z) / 12}" ixy="0" ixz="0"
+                     iyy="${mass * (x * x + z * z) / 12}" iyz="0"
+                     izz="${mass * (x * x + y * y) / 12}"
+            />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="cylinder_inertia" params="mass r h">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia ixx="${mass * (3 * r * r + h * h) / 12}" ixy="0" ixz="0"
+                     iyy="${mass * (3 * r * r + h * h) / 12}" iyz="0"
+                     izz="${mass * (r * r) / 2}"
+            />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="sphere_inertia" params="mass r">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia ixx="${mass * (2 * r * r) / 5}" ixy="0" ixz="0"
+                     iyy="${mass * (2 * r * r) / 5}" iyz="0"
+                     izz="${mass * (2 * r * r) / 5}"
+            />
+        </inertial>
+    </xacro:macro>
+
+</robot>

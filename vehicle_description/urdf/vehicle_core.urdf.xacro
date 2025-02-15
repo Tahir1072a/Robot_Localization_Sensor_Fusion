@@ -1,70 +1,21 @@
 <?xml version="1.0"?>
 
-<robot name="vehicle" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:arg name="is_ignition" default="true" />
-    <xacro:include filename="$(find vehicle_description)/urdf/vehicle_materials.xacro" />
-    <xacro:include filename="$(find vehicle_description)/urdf/vehicle_gazebo.xacro" />
-    <xacro:include filename="$(find vehicle_description)/urdf/vehicle_gazebo_controls.xacro"/>
-
-    <link name="base_footprint" />
-
+    <xacro:include filename="$(find vehicle_description)/urdf/includes.xacro" />
+   
     <xacro:vehicle_body />
-
-    <joint name="base_joint" type="fixed">
-        <parent link="base_footprint"/>
-        <child link="vehicle_body"/>
-        <origin xyz="0 0 ${body_height / 2}"/>
-    </joint>
-
-    <xacro:wheel prefix="rear_right" />
-    <xacro:wheel prefix="rear_left" />
-
-    <xacro:caster_wheel prefix="front" />
-    
-    <joint name="rear_right_wheel_joint" type="continuous">
-        <parent link="vehicle_body"/>
-        <child link="rear_right_wheel"/>
-        <origin xyz="${-(body_width / 4)} ${((body_depth / 2) + (wheel_length / 2))} 0" rpy="-${pi/2} 0 0"/>
-        <axis xyz="0 0 1"/>
-        <!-- <dynamics damping="0.2" /> -->
-    </joint>
-
-    <joint name="rear_left_wheel_joint" type="continuous">
-        <parent link="vehicle_body"/>
-        <child link="rear_left_wheel"/>
-        <origin xyz="${-(body_width / 4)} ${-((body_depth / 2) + (wheel_length / 2))} 0" rpy="-${pi/2} 0 0"/>
-        <axis xyz="0 0 1"/>
-        <!-- <dynamics damping="0.2" /> -->
-    </joint>
-    
-    
-    <joint name="front_caster_wheel_joint" type="fixed">
-        <parent link="vehicle_body"/>
-        <child  link="front_caster_wheel"/>
-        <origin xyz="${body_width / 4} 0 0"/>
-    </joint>
-
-    
-    <xacro:imu prefix="imu1" />
-    <xacro:imu prefix="imu2" />
-    <xacro:imu prefix="imu3" />
-    
-    <joint name="imu_joint_1" type="fixed">
-        <parent link="vehicle_body"/>
-        <child link="imu1_link"/>
-        <origin xyz="${0.05} 0 ${(body_height / 2) + 0.01 + wheel_radius}" rpy="0 0 0"/>
-    </joint>
-    <joint name="imu_joint_2" type="fixed">
-        <parent link="vehicle_body"/>
-        <child link="imu2_link"/>
-        <origin xyz="0 0 ${(body_height / 2) + 0.01 + wheel_radius}" rpy="0 0 0"/>
-    </joint>
-    
-    <joint name="imu_joint_3" type="fixed">
-        <parent link="vehicle_body"/>
-        <child link="imu3_link"/>
-        <origin xyz="${-0.05} 0 ${(body_height / 2) + 0.01 + wheel_radius}" rpy="0 0 0"/>
-    </joint>
+    <xacro:vehicle_wheels parent="vehicle_body"/>
+            
+    <xacro:imu_sensor name="imu1" topic_ns="imu1" parent="vehicle_body">
+        <origin xyz="0.05 0 ${(body_height / 2) + wheel_radius}" rpy="-${pi/2} 0 0"/>
+    </xacro:imu_sensor>
+    <xacro:imu_sensor name="imu2" topic_ns="imu2" parent="vehicle_body">
+        <origin xyz="0 0 ${(body_height / 2) + wheel_radius}" rpy="-${pi/2} 0 0"></origin>
+    </xacro:imu_sensor>
+    <xacro:imu_sensor name="imu3" topic_ns="imu3" parent="vehicle_body">
+        <origin xyz="-0.05 0 ${(body_height / 2) + wheel_radius}" rpy="-${pi/2} 0 0"></origin>
+    </xacro:imu_sensor>
     
 </robot>

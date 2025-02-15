@@ -56,7 +56,7 @@ class ImuLogger(Node):
         #self.get_logger().info("-----------------------------DEBUG-------------------------------")
         #self.get_logger().info(f"Processing {imu_id} data for timestamp: {timestamp}")
         #self.get_logger().info(str(self.buffer[str_timestamp]))
-        self.get_logger().info(timestamp)
+        #self.get_logger().info(timestamp)
         #self.get_logger().info(str(len(self.timestamp_arr)))
 
         with self.buffer_lock:

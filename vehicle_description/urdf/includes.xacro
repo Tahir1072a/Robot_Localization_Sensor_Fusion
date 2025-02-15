@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Rviz Color-->
+    <xacro:include filename="$(find vehicle_description)/urdf/includes/materials/rviz_materials.xacro" />
+
+    <!-- Common 3D Inertias -->
+    <xacro:include filename="$(find vehicle_description)/urdf/includes/gazebo/inertias.xacro" />
+
+    <xacro:include filename="$(find vehicle_description)/urdf/includes/components/body/vehicle_body.xacro" />
+    <!-- Caster and diff drive wheels-->
+    <xacro:include filename="$(find vehicle_description)/urdf/includes/components/wheels/vehicle_wheels.xacro" />
+
+    <!-- IMU -->
+    <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/bno055.xacro"/>
+
+    <!-- Gazebo configurations-->
+    <xacro:include filename="$(find vehicle_description)/urdf/includes/gazebo/gazebo_system.xacro" />
+
+</robot>
