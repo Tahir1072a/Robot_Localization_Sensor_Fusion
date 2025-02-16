@@ -9,13 +9,13 @@
     <xacro:vehicle_wheels parent="vehicle_body"/>
             
     <xacro:imu_sensor name="imu1" topic_ns="imu1" parent="vehicle_body">
-        <origin xyz="0.05 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0"/>
+        <origin xyz="0 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0"/>
     </xacro:imu_sensor>
     <xacro:imu_sensor name="imu2" topic_ns="imu2" parent="vehicle_body">
-        <origin xyz="0 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0"></origin>
+        <origin xyz="0 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0"/>
     </xacro:imu_sensor>
     <xacro:imu_sensor name="imu3" topic_ns="imu3" parent="vehicle_body">
-        <origin xyz="-0.05 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0"></origin>
+        <origin xyz="0 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0"/>
     </xacro:imu_sensor>
     
 </robot>
