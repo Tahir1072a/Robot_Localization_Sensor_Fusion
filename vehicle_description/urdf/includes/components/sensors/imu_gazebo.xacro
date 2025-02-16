@@ -3,14 +3,57 @@
 <robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- IMU Plugin -->
     <xacro:macro name="imu_gazebo" params="imu_name topic_ns" >
-        <gazebo reference="${imu_name}">
+        <gazebo reference="${name}_link">
             <!-- Based on bno055 datasheet-->
-            <sensor name="${name}">
+            <!-- https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf -->
+            <sensor name="${name}" type="imu">
                 <always_on>true</always_on>
-                <update_rate>75</update_rate>
-                <gz_frame_id>${imu_name}</gz_frame_id>
-                <topic>${imu_name}</topic>
-            </sensor>
+                <update_rate>100</update_rate>
+                <gz_frame_id>${name}_link</gz_frame_id>
+                <topic>${topic_ns}</topic>
+                <imu>
+                    <angular_velocity>
+                        <x>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>0.05236</stddev>
+                        </noise>
+                        </x>
+                        <y>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>0.05236</stddev>
+                        </noise>
+                        </y>
+                        <z>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>0.05236</stddev>
+                        </noise>
+                        </z>
+                    </angular_velocity>
+                    <linear_acceleration>
+                        <x>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>1.8639e-5</stddev>
+                        </noise>
+                        </x>
+                        <y>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>1.8639e-5</stddev>
+                        </noise>
+                        </y>
+                        <z>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>1.8639e-5</stddev>
+                        </noise>
+                        </z>
+                    </linear_acceleration>
+                </imu>
+            </sensor> 
         </gazebo>
     </xacro:macro>
 

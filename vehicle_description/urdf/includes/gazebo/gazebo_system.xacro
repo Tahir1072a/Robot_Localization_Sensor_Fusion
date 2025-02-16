@@ -32,27 +32,26 @@
         <fdirl>1 0 0</fdirl>
     </gazebo>
 
-    <!-- -->
+    <!-- ?? -->
     <gazebo>
         <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+            <robot_param>robot_description</robot_param>
+            <robot_param_node>robot_state_publisher</robot_param_node>
             <parameters>$(find vehicle_description)/config/vehicle_controller.yaml</parameters>
         </plugin>
+                
+        <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu"></plugin>
         
-        <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu">
-        </plugin>
-        <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
+        <plugin filename="libignition-gazebo-sensors-system.so" name="ignition::gazebo::systems::Sensors">
             <render_engine>ogre2</render_engine>
         </plugin> 
     </gazebo>
 
     <!-- Donanım ile etkileşime geçen kısmı ayarladığımız nokta !! -->
-    <ros2_control name="DiffSystem" type="system" >
+    <ros2_control name="IgnitionSystem" type="system" >
         <!-- use mock hardware gerçek bir robota yükleme yaparken kullanılır! -->
         <hardware>
             <plugin>ign_ros2_control/IgnitionSystem</plugin>
-            <!-- Donanımın default başlatma-durdurma süresini belirleriz -->
-            <param name="example_param_hw_start_duration_sec">0</param>
-            <param name="example_param_hw_stop_duration_sec">3.0</param>
         </hardware>
 
         <joint name="rear_right_wheel_joint">
