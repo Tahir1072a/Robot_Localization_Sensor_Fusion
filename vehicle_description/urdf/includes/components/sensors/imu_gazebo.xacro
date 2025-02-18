@@ -2,7 +2,7 @@
 
 <robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- IMU Plugin -->
-    <xacro:macro name="imu_gazebo" params="imu_name topic_ns" >
+    <xacro:macro name="imu_gazebo_bno055" params="imu_name topic_ns" >
         <gazebo reference="${name}_link">
             <!-- Based on bno055 datasheet-->
             <!-- https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf -->
@@ -16,9 +16,9 @@
                         <x>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.00523598775</stddev>
+                                <stddev>0.00523598775</stddev>  <!-- Noise Density -->
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>0.05235987755</bias_stddev>
+                                <bias_stddev>0.05235987755</bias_stddev> <!-- Bias instability -->
                             </noise>
                         </x>
                         <y>
@@ -66,6 +66,73 @@
                     </linear_acceleration>
                 </imu>
             </sensor> 
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:macro name="imu_gazebo_VN100" params="imu_name topic_ns">
+        <gazebo reference="${name}_link">
+            <!-- Based ON VN100 DATASHEET -->
+            <!-- https://www.vectornav.com/docs/default-source/product-brief/vn-100-product-brief.pdf?sfvrsn=a2a5ae5f_2 -->
+            <sensor name="${name}" type="imu">
+                <always_on>true</always_on>
+                <update_rate>200</update_rate>
+                <gz_fram_id>${name}_link</gz_fram_id>
+                <topic>${topic_ns}</topic>
+                <imu>
+                    <angular_velocity>
+                        <x>
+                            <noise type="gaussian">
+                                <mean>0.0</mean>
+                                <stddev>0.000740</stddev>
+                                <bias_mean>0.0</bias_mean>
+                                <bias_stddev>0.008727</bias_stddev>
+                            </noise>
+                        </x>
+                        <y>
+                            <noise type="gaussian">
+                                <mean>0.0</mean>
+                                <stddev>0.000740</stddev>
+                                <bias_mean>0.0</bias_mean>
+                                <bias_stddev>0.008727</bias_stddev>
+                            </noise>
+                        </y>
+                        <z>
+                            <noise type="gaussian">
+                                <mean>0.0</mean>
+                                <stddev>0.000740</stddev>
+                                <bias_mean>0.0</bias_mean>
+                                <bias_stddev>0.008727</bias_stddev>
+                            </noise>
+                        </z>
+                    </angular_velocity>
+                    <linear_velocity>
+                        <x>
+                            <noise type="gaussian">
+                                <mean>0.0</mean>
+                                <stddev>0.01665</stddev>
+                                <bias_mean></bias_mean>
+                                <bias_stddev>0.0002943</bias_stddev>
+                            </noise>
+                        </x>
+                        <y>
+                            <noise type="gaussian">
+                                <mean>0.0</mean>
+                                <stddev>0.01665</stddev>
+                                <bias_mean></bias_mean>
+                                <bias_stddev>0.0002943</bias_stddev>
+                            </noise>
+                        </y>
+                        <z>
+                            <noise type="gaussian">
+                                <mean>0.0</mean>
+                                <stddev>0.01665</stddev>
+                                <bias_mean></bias_mean>
+                                <bias_stddev>0.0002943</bias_stddev>
+                            </noise>
+                        </z>
+                    </linear_velocity>
+                </imu>
+            </sensor>
         </gazebo>
     </xacro:macro>
 
