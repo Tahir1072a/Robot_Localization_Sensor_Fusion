@@ -2,6 +2,7 @@
 
 <robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- IMU Plugin -->
+    <!-- Şimdilik kullanımdan kaldırılmıştır!! -->
     <xacro:macro name="imu_gazebo_bno055" params="imu_name topic_ns" >
         <gazebo reference="${name}_link">
             <!-- Based on bno055 datasheet-->
@@ -16,35 +17,35 @@
                         <x>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.00523598775</stddev>  <!-- Noise Density -->
+                                <stddev>0.001745329251</stddev>  <!-- Noise Density, radyan cinsinden! (sensörün tipik davranışı modellenmiştir) -->
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>0.05235987755</bias_stddev> <!-- Bias instability -->
+                                <bias_stddev>0.01745329251</bias_stddev> <!-- Bias instability, radyan cinsinden! (sensörün tipik davranışı modellenmiştir) -->
                             </noise>
                         </x>
                         <y>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.00523598775</stddev>
+                                <stddev>0.001745329251</stddev>
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>0.0005235987755</bias_stddev>
+                                <bias_stddev>0.01745329251</bias_stddev>
                             </noise>
                         </y>
                         <z>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.00523598775</stddev>
+                                <stddev>0.001745329251</stddev>
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>0.05235987755</bias_stddev>
+                                <bias_stddev>0.01745329251</bias_stddev>
                             </noise>
                         </z>
                     </angular_velocity>
                     <linear_acceleration>
                         <x>
                             <noise type="gaussian">
-                                <mean>0.0</mean>
-                                <stddev>1.8639e-5</stddev>
+                                <mean>0.0</mean>    <!-- 100 ODR(Output Data Rate) için 32hz bandwith-->
+                                <stddev>8.32e-3</stddev> <!-- Output Noise Density, m/s^2 cinsinde, sensorün tipik davranışı ele alınmıştır. -->
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>1.471e-3</bias_stddev>
+                                <bias_stddev>0.4903</bias_stddev>
                             </noise>
                         </x>
                         <y>
@@ -83,54 +84,54 @@
                         <x>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.000740</stddev>
+                                <stddev>9.94e-4</stddev>
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>0.008727</bias_stddev>
+                                <bias_stddev>4.848e-6</bias_stddev> <!-- radyan cinsinden -->
                             </noise>
                         </x>
                         <y>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.000740</stddev>
+                                <stddev>9.94e-4</stddev>
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>0.008727</bias_stddev>
+                                <bias_stddev>4.848e-6</bias_stddev>
                             </noise>
                         </y>
                         <z>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.000740</stddev>
+                                <stddev>9.94e-4</stddev>
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>0.008727</bias_stddev>
+                                <bias_stddev>4.848e-6</bias_stddev>
                             </noise>
                         </z>
                     </angular_velocity>
-                    <linear_velocity>
+                    <linear_acceleration>
                         <x>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.01665</stddev>
-                                <bias_mean></bias_mean>
-                                <bias_stddev>0.0002943</bias_stddev>
+                                <stddev>0.02082152953</stddev>
+                                <bias_mean>0.0</bias_mean>
+                                <bias_stddev>3.92e-4</bias_stddev> <!-- m/s^2 cinsinden. -->
                             </noise>
                         </x>
                         <y>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.01665</stddev>
-                                <bias_mean></bias_mean>
-                                <bias_stddev>0.0002943</bias_stddev>
+                                <stddev>0.02082152953</stddev>
+                                <bias_mean>0.0</bias_mean>
+                                <bias_stddev>3.92e-4</bias_stddev>
                             </noise>
                         </y>
                         <z>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.01665</stddev>
-                                <bias_mean></bias_mean>
-                                <bias_stddev>0.0002943</bias_stddev>
+                                <stddev>0.02082152953</stddev>
+                                <bias_mean>0.0</bias_mean>
+                                <bias_stddev>3.92e-4</bias_stddev>
                             </noise>
                         </z>
-                    </linear_velocity>
+                    </linear_acceleration>
                 </imu>
             </sensor>
         </gazebo>

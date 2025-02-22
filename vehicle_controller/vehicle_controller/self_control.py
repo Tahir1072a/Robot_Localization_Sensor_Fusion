@@ -46,8 +46,8 @@ class SelfControl(Node):
         elif not self.is_moving_forward and self.current_distance <= 0.1:
             self.get_logger().info("Araç başlangıç noktasına geri döndü.")
             self.stop_vehicle()
-            self.is_loop_finished = True
             time.sleep(4)
+            self.is_loop_finished = True
         elif not self.is_moving_forward:
             self.move_backward()
 
@@ -56,14 +56,14 @@ class SelfControl(Node):
         msg.twist.linear.x = self.speed
         msg.twist.angular.z = 0.0
         self.diff_drive_control_pub.publish(msg)
-        self.get_logger().info("Araç ileri gidiyor!")
+        #self.get_logger().info("Araç ileri gidiyor!")
 
     def move_backward(self):
         msg = TwistStamped()
         msg.twist.linear.x = -self.speed
         msg.twist.angular.z = 0.0
         self.diff_drive_control_pub.publish(msg)
-        self.get_logger().info("Araç geri gidiyor!")
+        #self.get_logger().info("Araç geri gidiyor!")
     
     def stop_vehicle(self):
         msg = TwistStamped()
@@ -78,6 +78,7 @@ class SelfControl(Node):
         self.loop_pub.publish(msg)
         if self.is_loop_finished == True:
             rclpy.shutdown()
+            self.destroy_node()
 
 
 def main():

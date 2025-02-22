@@ -18,14 +18,6 @@ class ImuLogger(Node):
     def __init__(self):
         super().__init__("imu_logger")
 
-        self.file_path = "imu_data.csv"
-        self.file_path_excel = "imu_data_excel.xlsx"
-        subprocess.run(["code", self.file_path])      
-
-        self.imu_file = open(self.file_path, "w")
-        self.imu_file_excel = open(self.file_path_excel, "w")
-        self.imu_file.write(f"{'time':<16} {'pose_x':<16} {'pose_y':<16} {'pose_z':<16} {'ax1':<16} {'ay1':<16} {'az1':<16} {'gx1':<16} {'gy1':<16} {'gz1':<16} {'ax2':<16} {'ay2':<16} {'az2':<16} {'gx2':<16} {'gy2':<16} {'gz2':<16} {'ax3':<16} {'ay3':<16} {'az3':<16} {'gx3':<16} {'gy3':<16} {'gz3':<16}\n")
-
         self.df = pd.DataFrame(columns=[
             "time", "pose_x", "pose_y", "pose_z",
             "ax1", "ay1", "az1", "gx1", "gy1", "gz1",
@@ -47,7 +39,7 @@ class ImuLogger(Node):
 
         self.odom_sub = self.create_subscription(Odometry, "/diff_drive_robot_controller/odom", self.odom_callback, 30)
 
-        self.loop_info_sub = self.create_subscription(Bool, "loop_info", self.loop_info_callback, 10)
+        self.loop_info_sub = self.create_subscription(Bool, "loop_info", self.loop_info_callback, 5)
 
     def odom_callback(self, msg):
         current_pos = msg.pose.pose.position
@@ -117,17 +109,10 @@ class ImuLogger(Node):
         while not self.is_finished:
             try:
                 row = self.queue.get()
-                # CSV dosyasına yaz.
-                data_str = f"{row['time']:<15}, {row['pose_x']:<15.12f}, {row['pose_y']:<15.12f}, {row['pose_z']:<15.12f}, "
-                for imu_id in ["1", "2", "3"]:
-                    data_str += f"{row[f'ax{imu_id}']:<15.12f}, {row[f'ay{imu_id}']:<15.12f}, {row[f'az{imu_id}']:<15.12f}, "
-                    data_str += f"{row[f'gx{imu_id}']:<15.12f}, {row[f'gy{imu_id}']:<15.12f}, {row[f'gz{imu_id}']:<15.12f} "
-                data_str = data_str.rstrip() + "\n"
-                self.imu_file.write(data_str)
-                self.imu_file.flush()
+
                 # pandas 2.0 sürümü ile df'ye satır ekleme yöntemi değişmiştir!
                 self.df = pd.concat([self.df, pd.DataFrame([row])], ignore_index=True)
-                self.df.to_excel(self.file_path_excel)
+
             except Exception as e:
                 self.get_logger().error(str(e))
                 continue
@@ -139,6 +124,8 @@ class ImuLogger(Node):
 
     def loop_info_callback(self, msg):
         if msg.data:
+            self.is_finished = True
+
            # CSV dosyasını kaydet
             new_csv_path = "imu_saved_data.csv"
             destination_csv_path = Path(new_csv_path)
@@ -147,8 +134,10 @@ class ImuLogger(Node):
                     break
                 new_csv_path = f"imu_saved_data{i}.csv"
                 destination_csv_path = Path(new_csv_path)
-            shutil.copy(self.file_path, destination_csv_path)
 
+            self.save_dataframe_to_csv_formatted(destination_csv_path)
+
+            #excel dosyasına kaydet
             new_excel_path = "imu_saved_data.xlsx"
             destination_excel_path = Path(new_excel_path)
             for i in range(1, 10):
@@ -159,8 +148,28 @@ class ImuLogger(Node):
             self.df.to_excel(destination_excel_path, index=False)
 
             rclpy.shutdown()
+            self.destroy_node()
 
+    def save_dataframe_to_csv_formatted(self, file_path):
 
+        with open(file_path, "w") as f:
+            
+            header = f"{'time':<15}, {'pose_x':<15}, {'pose_y':<15}, {'pose_z':<15}, "
+            for imu_id in ["1", "2", "3"]:
+                header += f"{'ax' + imu_id:<15}, {'ay' + imu_id:<15}, {'az' + imu_id:<15}, "
+                header += f"{'gx' + imu_id:<15}, {'gy' + imu_id:<15}, {'gz' + imu_id:<15} "
+            header = header.rstrip() + "\n"
+            f.write(header)
+            
+            for _, row in self.df.iterrows():
+                data_str = f"{row['time']:<15}, {row['pose_x']:<15.12f}, {row['pose_y']:<15.12f}, {row['pose_z']:<15.12f}, "
+                for imu_id in ["1", "2", "3"]:
+                    data_str += f"{row[f'ax{imu_id}']:<15.12f}, {row[f'ay{imu_id}']:<15.12f}, {row[f'az{imu_id}']:<15.12f}, "
+                    data_str += f"{row[f'gx{imu_id}']:<15.12f}, {row[f'gy{imu_id}']:<15.12f}, {row[f'gz{imu_id}']:<15.12f} "
+                data_str = data_str.rstrip() + "\n"
+                f.write(data_str)
+
+    
 def main():
     rclpy.init()
     node = ImuLogger()

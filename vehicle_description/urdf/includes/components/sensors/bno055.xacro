@@ -4,19 +4,13 @@
     <!-- Gazebo IMU plugin -->
     <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/imu_gazebo.xacro" /> 
     
-    <!-- VN100 CONSTANST https://www.vectornav.com/docs/default-source/product-brief/vn-100-product-brief.pdf?sfvrsn=a2a5ae5f_2 -->
-    <xacro:property name="vn100_depth" value="0.022" />
-    <xacro:property name="vn100_width" value="0.024" />
-    <xacro:property name="vn100_height" value="0.003"/>
-    <xacro:property name="vn100_mass" value="0.0035"/>
-
     <!-- Kaynak: https://www.mouser.com.tr/ProductDetail/Bosch-Sensortec/BNO055?qs=QhAb4EtQfbV8Z2YmISucWw%3D%3D&srsltid=AfmBOoqaJM1CKMs2fuZsgKlemHZyKtVKounwW_lcwwsTkwHkVq9O6MgB -->
     <xacro:property name="bno_depth" value="0.0052" />
     <xacro:property name="bno_width" value="0.0038" />
     <xacro:property name="bno_height" value="0.00113"/>
     <xacro:property name="bno_mass" value="0.00015"/>
     
-    <xacro:macro name="imu_sensor" params="name topic_ns:=imu parent *origin">
+    <xacro:macro name="bno_055" params="name topic_ns:=imu parent *origin">
 
         <joint name="${name}_joint" type="fixed">
             <parent link="${parent}"/>
@@ -47,38 +41,5 @@
         <xacro:imu_gazebo_bno055  imu_name="${name}" topic_ns="${topic_ns}" />
     
     </xacro:macro>
-    
-    <!-- 
-    <xacro:macro name="imu_sensor" params="name topic_ns:=imu parent *origin">
-
-        <joint name="${name}_joint" type="fixed">
-            <parent link="${parent}"/>
-            <child link="${name}_link"/>
-            <xacro:insert_block name="origin" />
-        </joint>
-
-        <link name="${name}_link">
-            <visual>
-                <origin xyz="0 0 0"/>
-                <geometry>
-                    <box size="${vn100_width} ${vn100_depth} ${vn100_height}"/>
-                </geometry>
-                <material name="silver" />
-            </visual>
-
-            <collision>
-                <origin xyz="0 0 0"/>
-                <geometry>
-                    <box size="${vn100_width} ${vn100_depth} ${vn100_height}"/>
-                </geometry>
-            </collision>
-            
-            <xacro:solid_cuboid_inertia mass="${vn100_mass}" x="${vn100_width}" y="${vn100_depth}" z="${bno_height}" />
-        </link>
-
-        <xacro:imu_gazebo_VN100 imu_name="${name}" topic_ns="${topic_ns}" />
-
-    </xacro:macro>
-    -->
 
 </robot>
