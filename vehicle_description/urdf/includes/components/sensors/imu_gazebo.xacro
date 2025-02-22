@@ -26,7 +26,7 @@
                                 <mean>0.0</mean>
                                 <stddev>0.00523598775</stddev>
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>0.05235987755</bias_stddev>
+                                <bias_stddev>0.0005235987755</bias_stddev>
                             </noise>
                         </y>
                         <z>

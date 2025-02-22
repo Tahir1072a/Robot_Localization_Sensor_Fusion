@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 import rclpy
 import subprocess
+import shutil
+import pandas as pd
+
+from pathlib import Path
 
 from rclpy.node import Node
 from threading import Lock, Thread
@@ -8,21 +12,32 @@ from queue import Queue
 
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Imu
+from std_msgs.msg import Bool
 
 class ImuLogger(Node):
     def __init__(self):
         super().__init__("imu_logger")
 
         self.file_path = "imu_data.csv"
+        self.file_path_excel = "imu_data_excel.xlsx"
         subprocess.run(["code", self.file_path])      
 
         self.imu_file = open(self.file_path, "w")
+        self.imu_file_excel = open(self.file_path_excel, "w")
         self.imu_file.write(f"{'time':<16} {'pose_x':<16} {'pose_y':<16} {'pose_z':<16} {'ax1':<16} {'ay1':<16} {'az1':<16} {'gx1':<16} {'gy1':<16} {'gz1':<16} {'ax2':<16} {'ay2':<16} {'az2':<16} {'gx2':<16} {'gy2':<16} {'gz2':<16} {'ax3':<16} {'ay3':<16} {'az3':<16} {'gx3':<16} {'gy3':<16} {'gz3':<16}\n")
+
+        self.df = pd.DataFrame(columns=[
+            "time", "pose_x", "pose_y", "pose_z",
+            "ax1", "ay1", "az1", "gx1", "gy1", "gz1",
+            "ax2", "ay2", "az2", "gx2", "gy2", "gz2",
+            "ax3", "ay3", "az3", "gx3", "gy3", "gz3"
+        ])
 
         self.buffer = {}
         self.buffer_lock = Lock()
         self.queue = Queue()
-            
+        self.is_finished = False
+
         self.w_thread = Thread(target=self.write_to_file, daemon=True)
         self.w_thread.start()
 
@@ -32,13 +47,14 @@ class ImuLogger(Node):
 
         self.odom_sub = self.create_subscription(Odometry, "/diff_drive_robot_controller/odom", self.odom_callback, 30)
 
+        self.loop_info_sub = self.create_subscription(Bool, "loop_info", self.loop_info_callback, 10)
+
     def odom_callback(self, msg):
         current_pos = msg.pose.pose.position
         timestamp = self.get_timestamp(msg)
 
         if self.buffer.get(timestamp) is None:
             self.buffer[timestamp] = {}
-
 
         with self.buffer_lock:
             self.buffer[timestamp]["pose"] = {
@@ -75,35 +91,74 @@ class ImuLogger(Node):
     def prepare_data(self, timestamp):
         data = self.buffer[timestamp]
 
-        data_str = f"{timestamp:<15} "
-        for imu_id in ["pose", "imu1", "imu2", "imu3"]:
-            if imu_id == "pose":
-                pass
-                pose_data = data[imu_id]
-                data_str += f"{pose_data['pose_x']:<15.12f}, {pose_data['pose_y']:<15.12f}, {pose_data['pose_z']:<15.12f}"
-            else: 
-                imu_data = data[imu_id]
-                data_str += f"{imu_data['ax']:<15.12f}, {imu_data['ay']:<15.12f}, {imu_data['az']:<15.12f}, {imu_data['gx']:<15.12f}, {imu_data['gy']:<15.12f}, {imu_data['gz']:<15.12f} "
-        
-        data_str = data_str.rstrip() + "\n"
+        row = {
+            "time": timestamp,
+            "pose_x": data["pose"]["pose_x"],
+            "pose_y": data["pose"]["pose_y"],
+            "pose_z": data["pose"]["pose_z"],
+        }
 
+        for imu_id in ["imu1", "imu2", "imu3"]:
+            imu_data = data[imu_id]
+            row.update({
+                f"ax{imu_id[-1]}": imu_data["ax"],
+                f"ay{imu_id[-1]}": imu_data["ay"],
+                f"az{imu_id[-1]}": imu_data["az"],
+                f"gx{imu_id[-1]}": imu_data["gx"],
+                f"gy{imu_id[-1]}": imu_data["gy"],
+                f"gz{imu_id[-1]}": imu_data["gz"],
+            })
+        
         with self.buffer_lock:
-            self.queue.put(data_str)
+            self.queue.put(row)
             del self.buffer[timestamp]
 
     def write_to_file(self):
-        while True:
+        while not self.is_finished:
             try:
-                data_str = self.queue.get()
+                row = self.queue.get()
+                # CSV dosyasına yaz.
+                data_str = f"{row['time']:<15}, {row['pose_x']:<15.12f}, {row['pose_y']:<15.12f}, {row['pose_z']:<15.12f}, "
+                for imu_id in ["1", "2", "3"]:
+                    data_str += f"{row[f'ax{imu_id}']:<15.12f}, {row[f'ay{imu_id}']:<15.12f}, {row[f'az{imu_id}']:<15.12f}, "
+                    data_str += f"{row[f'gx{imu_id}']:<15.12f}, {row[f'gy{imu_id}']:<15.12f}, {row[f'gz{imu_id}']:<15.12f} "
+                data_str = data_str.rstrip() + "\n"
                 self.imu_file.write(data_str)
                 self.imu_file.flush()
-            except:
+                # pandas 2.0 sürümü ile df'ye satır ekleme yöntemi değişmiştir!
+                self.df = pd.concat([self.df, pd.DataFrame([row])], ignore_index=True)
+                self.df.to_excel(self.file_path_excel)
+            except Exception as e:
+                self.get_logger().error(str(e))
                 continue
     
     def get_timestamp(self, msg):
         timestamp_nano = msg.header.stamp.nanosec
         timestamp_sec = msg.header.stamp.sec
         return f"{timestamp_sec}.{timestamp_nano}"
+
+    def loop_info_callback(self, msg):
+        if msg.data:
+           # CSV dosyasını kaydet
+            new_csv_path = "imu_saved_data.csv"
+            destination_csv_path = Path(new_csv_path)
+            for i in range(1, 10):
+                if not destination_csv_path.exists():
+                    break
+                new_csv_path = f"imu_saved_data{i}.csv"
+                destination_csv_path = Path(new_csv_path)
+            shutil.copy(self.file_path, destination_csv_path)
+
+            new_excel_path = "imu_saved_data.xlsx"
+            destination_excel_path = Path(new_excel_path)
+            for i in range(1, 10):
+                if not destination_excel_path.exists():
+                    break
+                new_excel_path = f"imu_saved_data{i}.xlsx"
+                destination_excel_path = Path(new_excel_path)
+            self.df.to_excel(destination_excel_path, index=False)
+
+            rclpy.shutdown()
 
 
 def main():

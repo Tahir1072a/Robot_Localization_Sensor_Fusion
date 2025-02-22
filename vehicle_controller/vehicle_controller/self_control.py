@@ -8,15 +8,21 @@ from rclpy.node import Node
 from geometry_msgs.msg import TwistStamped
 from nav_msgs.msg import Odometry
 
+from std_msgs.msg import Bool
+
 class SelfControl(Node):
     def __init__(self):
         super().__init__("self_controller")
         self.diff_drive_control_pub = self.create_publisher(TwistStamped, "/diff_drive_robot_controller/cmd_vel", 10)
 
         self.odom_sub = self.create_subscription(Odometry, "/diff_drive_robot_controller/odom", self.odom_callback, 10)
+        self.loop_pub = self.create_publisher(Bool, "loop_info", 10)
+        self.frequency = 0.05
+        self.timer = self.create_timer(self.frequency, self.loop_info_callback)
+        self.is_loop_finished = False
 
         self.speed = 1.5
-        self.distance_to_travel = 3.0
+        self.distance_to_travel = 7.0
         self.current_distance = 0.0
         self.start_position = None
         self.is_moving_forward = True
@@ -26,20 +32,22 @@ class SelfControl(Node):
             self.start_position = msg.pose.pose.position
             return
 
+
         current_position = msg.pose.pose.position
         self.current_distance = abs(current_position.x - self.start_position.x)
 
         if self.is_moving_forward and self.current_distance >= self.distance_to_travel:
             self.get_logger().info(f"Hedefe varıldı: {self.current_distance} metre")
             self.stop_vehicle()
-            time.sleep(1.0)
+            time.sleep(4)
             self.is_moving_forward = False
         elif self.is_moving_forward:
             self.move_forward()
         elif not self.is_moving_forward and self.current_distance <= 0.1:
             self.get_logger().info("Araç başlangıç noktasına geri döndü.")
             self.stop_vehicle()
-            rclpy.shutdown()
+            self.is_loop_finished = True
+            time.sleep(4)
         elif not self.is_moving_forward:
             self.move_backward()
 
@@ -63,6 +71,14 @@ class SelfControl(Node):
         msg.twist.angular.z = 0.0
         self.diff_drive_control_pub.publish(msg)
         self.get_logger().info("Araç Durdu!")
+
+    def loop_info_callback(self):
+        msg = Bool()
+        msg.data = self.is_loop_finished
+        self.loop_pub.publish(msg)
+        if self.is_loop_finished == True:
+            rclpy.shutdown()
+
 
 def main():
     rclpy.init()
