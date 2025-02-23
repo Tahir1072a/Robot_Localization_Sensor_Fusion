@@ -71,6 +71,10 @@ def generate_launch_description():
             "/imu1@sensor_msgs/msg/Imu[gz.msgs.IMU",
             "/imu2@sensor_msgs/msg/Imu[gz.msgs.IMU",
             "/imu3@sensor_msgs/msg/Imu[gz.msgs.IMU",
+            "/model/vehicle/pose@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V"
+        ],
+        remappings=[
+            ("model/vehicle/pose", "/vehicle/real_pose")
         ]
     )
 

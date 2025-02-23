@@ -22,7 +22,7 @@ class SelfControl(Node):
         self.is_loop_finished = False
 
         self.speed = 1.5
-        self.distance_to_travel = 7.0
+        self.distance_to_travel = 3.5
         self.current_distance = 0.0
         self.start_position = None
         self.is_moving_forward = True
