@@ -55,6 +55,7 @@ class ImuLogger(Node):
                 "pose_z": current_pos.z
             }
 
+
     def imu_sub_callback(self, msg, imu_id):
         timestamp = self.get_timestamp(msg)
 

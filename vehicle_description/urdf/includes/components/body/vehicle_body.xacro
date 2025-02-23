@@ -18,6 +18,7 @@
     <xacro:macro name="vehicle_body">
     
         <link name="base_footprint" />
+        <!-- Base Link -->
         <link name="vehicle_body">
             <visual>
                 <origin xyz ="0 0 ${wheel_radius}" />
