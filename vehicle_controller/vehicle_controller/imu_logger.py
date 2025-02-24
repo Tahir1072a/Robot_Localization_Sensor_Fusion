@@ -19,6 +19,7 @@ class ImuLogger(Node):
 
         self.df = pd.DataFrame(columns=[
             "time", "pose_x", "pose_y", "pose_z",
+            "estimated_pose_x", "estimated_pose_y", "estimated_pose_z",
             "ax1", "ay1", "az1", "gx1", "gy1", "gz1",
             "ax2", "ay2", "az2", "gx2", "gy2", "gz2",
             "ax3", "ay3", "az3", "gx3", "gy3", "gz3"
@@ -37,14 +38,34 @@ class ImuLogger(Node):
         self.imu3_sub = self.create_subscription(Imu, "/imu3", lambda msg: self.imu_sub_callback(msg, "imu3"), 30)
 
         self.vehicle_pose_sub = self.create_subscription(TFMessage, "/vehicle/real_pose", self.vehicle_real_pose_callback, 30)
-        #self.odom_sub = self.create_subscription(Odometry, "diff_drive_robot_controller/odom", self.odom_callback, 30)
+        self.ekf_filtered_odom_sub = self.create_subscription(Odometry, "/odometry/filtered", self.ekf_filtered_odom ,30)
 
         self.loop_info_sub = self.create_subscription(Bool, "loop_info", self.loop_info_callback, 5)
 
+    #Son gelen veri!!
+    def ekf_filtered_odom(self, msg):
+        estimated_pose = msg.pose.pose.position
+        timestamp = self.get_timestamp(msg)
+
+        if self.buffer.get(timestamp) is None:
+            self.buffer[timestamp] = {}
+        
+        with self.buffer_lock:
+            self.buffer[timestamp]["estimated_pose"] = {
+                "estimated_pose_x": estimated_pose.x,
+                "estimated_pose_y": estimated_pose.y,
+                "estimated_pose_z": estimated_pose.z
+            }
+        
+        if len(self.buffer[timestamp]) == 5:
+            self.prepare_data(timestamp)
+            
     def vehicle_real_pose_callback(self, msg):
         current_pose = msg.transforms[0].transform.translation
         timestamp = self.get_timestamp(msg.transforms[0])
 
+        #self.get_logger().info(f"Pose: {timestamp}")
+        
         if self.buffer.get(timestamp) is None:
             self.buffer[timestamp] = {}
 
@@ -55,28 +76,10 @@ class ImuLogger(Node):
                 "pose_z": current_pose.z
             }       
 
-    def odom_callback(self, msg):
-        current_speed = msg.twist.twist
-        timestamp = self.get_timestamp(msg)
-
-        if self.buffer.get(timestamp) is None:
-            self.buffer[timestamp] = {}
-
-        #self.get_logger().info("-----------------------------DEBUG-------------------------------")
-        #self.get_logger().info(f"Processing {current_speed.linear.x} data for timestamp: {timestamp}")
-
-        with self.buffer_lock:
-            self.buffer[timestamp]["speed"] = {
-                "linear_x": current_speed.linear.x,
-                "linear_y": current_speed.linear.y,
-                "linear_z": current_speed.linear.z,
-                "angular_x": current_speed.angular.x,
-                "angular_y": current_speed.angular.y,
-                "angular_z": current_speed.angular.z
-            }
-
     def imu_sub_callback(self, msg, imu_id):
         timestamp = self.get_timestamp(msg)
+
+        #self.get_logger().info(f"Imu: {timestamp}")
 
         if self.buffer.get(timestamp) is None:
             self.buffer[timestamp] = {}
@@ -86,7 +89,7 @@ class ImuLogger(Node):
         #self.get_logger().info(str(self.buffer[timestamp]))
         #self.get_logger().info(timestamp)
         #self.get_logger().info(str(len(self.timestamp_arr)))
-
+        
         with self.buffer_lock:
             self.buffer[timestamp][imu_id] = {
                 "ax": msg.linear_acceleration.x,
@@ -96,9 +99,12 @@ class ImuLogger(Node):
                 "gy": msg.angular_velocity.y,
                 "gz": msg.angular_velocity.z,
             }
-
-        if len(self.buffer[timestamp]) == 4:
+            
+        """
+        if len(self.buffer[timestamp]) == 5:
+            self.get_logger().info("Okey")
             self.prepare_data(timestamp)
+        """
     
     def prepare_data(self, timestamp):
         data = self.buffer[timestamp]
@@ -108,6 +114,9 @@ class ImuLogger(Node):
             "pose_x": data["pose"]["pose_x"],
             "pose_y": data["pose"]["pose_y"],
             "pose_z": data["pose"]["pose_z"],
+            "estimated_pose_x": data["estimated_pose"]["estimated_pose_x"],
+            "estimated_pose_y": data["estimated_pose"]["estimated_pose_y"],
+            "estimated_pose_z": data["estimated_pose"]["estimated_pose_z"]
         }
 
         for imu_id in ["imu1", "imu2", "imu3"]:
@@ -139,7 +148,7 @@ class ImuLogger(Node):
     def get_timestamp(self, msg):
         timestamp_nano = msg.header.stamp.nanosec
         timestamp_sec = msg.header.stamp.sec
-        return f"{timestamp_sec}.{timestamp_nano}"
+        return f"{timestamp_sec}.{timestamp_nano:09d}"
 
     def loop_info_callback(self, msg):
         if msg.data:

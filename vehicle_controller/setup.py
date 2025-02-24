@@ -21,8 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             "imu_logger= vehicle_controller.imu_logger:main",
-            "self_control= vehicle_controller.self_control:main",
-            "file_operation= vehicle_controller.file_operation:main"
+            "self_control= vehicle_controller.self_control:main"
         ],
     },
 )

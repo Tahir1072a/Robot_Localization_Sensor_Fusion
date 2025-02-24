@@ -20,7 +20,16 @@ def generate_launch_description():
         executable="imu_logger"
     )
 
+    ekf_filter = IncludeLaunchDescription(
+        os.path.join(
+            get_package_share_directory("vehicle_localization"),
+            "launch",
+            "ekf_filter.launch.py"
+        )
+    )
+
     return LaunchDescription([
         gazebo,
-        imu_logger_node
+        imu_logger_node,
+        ekf_filter
     ])
