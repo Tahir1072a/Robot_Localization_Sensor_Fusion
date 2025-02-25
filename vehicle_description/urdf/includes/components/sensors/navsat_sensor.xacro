@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+
+<robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/navsat_gazebo.xacro" />
+
+    <xacro:macro name="navsat_sensor" params="name topic_ns:=imu parent *origin">
+        <joint name="${name}_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${name}_link"/>
+            <xacro:insert_block name="origin" />
+        </joint>
+
+        <link name="${name}_link">
+            <visual>
+                <origin xyz="0 0 0"/>
+                <geometry>
+                    <box size="0.001 0.001 0.001"/>
+                </geometry>
+                <material name="silver"/>
+            </visual>
+
+            <collision>
+                <origin xyz="0 0 0"/>
+                <geometry>
+                    <box size="0.001 0.001 0.001"/>
+                </geometry>
+            </collision>
+
+            <xacro:solid_cuboid_inertia mass="0.001" x="0.001" y="0.001" z="0.001" />
+        </link>
+
+        <xacro:navsat_gazebo navsat_name="${name}" topic_ns="${topic_ns}"/>
+
+    </xacro:macro>
+
+</robot>

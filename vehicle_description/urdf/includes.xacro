@@ -14,7 +14,10 @@
     <!-- IMU -->
     <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/imu_sensor.xacro" />
 
+    <!-- NAVSAT/GPS -->
+    <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/navsat_sensor.xacro" />
+
     <!-- Gazebo configurations-->
     <xacro:include filename="$(find vehicle_description)/urdf/includes/gazebo/gazebo_system.xacro" />
-
+    
 </robot>

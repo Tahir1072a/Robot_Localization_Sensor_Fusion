@@ -39,14 +39,14 @@ class SelfControl(Node):
         if self.is_moving_forward and self.current_distance >= self.distance_to_travel:
             self.get_logger().info(f"Hedefe varıldı: {self.current_distance} metre")
             self.stop_vehicle()
-            time.sleep(4)
+            time.sleep(3)
             self.is_moving_forward = False
         elif self.is_moving_forward:
             self.move_forward()
         elif not self.is_moving_forward and self.current_distance <= 0.1:
             self.get_logger().info("Araç başlangıç noktasına geri döndü.")
             self.stop_vehicle()
-            time.sleep(4)
+            time.sleep(3)
             self.is_loop_finished = True
         elif not self.is_moving_forward:
             self.move_backward()

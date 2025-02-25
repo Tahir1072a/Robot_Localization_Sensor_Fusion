@@ -13,7 +13,7 @@ def generate_launch_description():
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        parameters=[os.path.join(vehicle_localization_dir, "config", "ekf.yaml")]
+        parameters=[os.path.join(vehicle_localization_dir, "config", "ekf_with_wheel_encoder.yaml")]
     )
 
     return LaunchDescription([

@@ -71,13 +71,13 @@
     </xacro:macro>
 
     <xacro:macro name="imu_gazebo_VN100" params="imu_name topic_ns">
-        <gazebo reference="${name}_link">
+        <gazebo reference="${imu_name}_link">
             <!-- Based ON VN100 DATASHEET -->
             <!-- https://www.vectornav.com/docs/default-source/product-brief/vn-100-product-brief.pdf?sfvrsn=a2a5ae5f_2 -->
-            <sensor name="${name}" type="imu">
+            <sensor name="${imu_name}" type="imu">
                 <always_on>true</always_on>
                 <update_rate>200</update_rate>
-                <gz_fram_id>${name}_link</gz_fram_id>
+                <gz_fram_id>${imu_name}_link</gz_fram_id>
                 <topic>${topic_ns}</topic>
                 <imu>
                     <angular_velocity>

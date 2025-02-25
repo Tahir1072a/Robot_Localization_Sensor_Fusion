@@ -41,6 +41,7 @@
         </plugin>
                 
         <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu"></plugin>
+        <plugin filename="libignition-gazebo-navsat-system" name="ignition::gazebo::systems::NavSat"></plugin>
         
         <plugin filename="libignition-gazebo-sensors-system.so" name="ignition::gazebo::systems::Sensors">
             <render_engine>ogre2</render_engine>
