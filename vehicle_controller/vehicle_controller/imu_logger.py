@@ -46,6 +46,8 @@ class ImuLogger(Node):
     def ekf_filtered_odom(self, msg):
         estimated_pose = msg.pose.pose.position
         timestamp = self.get_timestamp(msg)
+        
+        #self.get_logger().info(f"Estimated Pose: {timestamp}")
 
         if self.buffer.get(timestamp) is None:
             self.buffer[timestamp] = {}
@@ -57,6 +59,8 @@ class ImuLogger(Node):
                 "estimated_pose_z": estimated_pose.z
             }
         
+        #self.get_logger().info(str(self.buffer[timestamp]))
+
         if len(self.buffer[timestamp]) == 5:
             self.prepare_data(timestamp)
             
@@ -89,7 +93,7 @@ class ImuLogger(Node):
         #self.get_logger().info(str(self.buffer[timestamp]))
         #self.get_logger().info(timestamp)
         #self.get_logger().info(str(len(self.timestamp_arr)))
-        
+
         with self.buffer_lock:
             self.buffer[timestamp][imu_id] = {
                 "ax": msg.linear_acceleration.x,
