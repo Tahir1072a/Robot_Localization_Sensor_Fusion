@@ -77,7 +77,7 @@
             <sensor name="${imu_name}" type="imu">
                 <always_on>true</always_on>
                 <update_rate>200</update_rate>
-                <gz_fram_id>${imu_name}_link</gz_fram_id>
+                <gz_frame_id>${imu_name}_link</gz_frame_id>
                 <topic>${topic_ns}</topic>
                 <imu>
                     <angular_velocity>

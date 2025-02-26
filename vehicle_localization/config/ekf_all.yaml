@@ -15,7 +15,7 @@ ekf_filter_node:
     publish_acceleration: true
     reset_on_time_jump: true
     odom_frame: odom
-    base_link_frame: vehicle_body
+    base_link_frame: base_footprint
     world_frame: odom #base_footprint
     
     # Değişecek!!

@@ -14,20 +14,21 @@ ekf_filter_node:
     publish_tf: true
     publish_acceleration: true
     reset_on_time_jump: true
+    map_frame: map
     odom_frame: odom
-    base_link_frame: vehicle_body
-    world_frame: odom #base_footprint
+    base_link_frame: base_link
+    world_frame: map 
 
     #Değişecek
-    odom0: diff_drive_robot_controller/odom
+    odom0: odometry/gps
     odom0_config: [true, true, true,
                    false, false, false,
-                   true,  true,  true,
-                   false, false, true,
+                   false, false, false,
+                   false, false, false,
                    false, false, false]
 
-    odom0_queue_size: 2
-    odom0_nodelay: false
+    odom0_queue_size: 10
+    odom0_nodelay: true
     odom0_differential: false
     odom0_relative: false
 
@@ -89,3 +90,17 @@ ekf_filter_node:
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     1e-9,   0.0,    0.0,
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    1e-9,   0.0,
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    0.0,    1e-9]
+
+navsat_transform:
+  ros__parameters:
+    use_sim_time: true  # Simülasyon zamanını kullan
+    frequency: 100.0     # Node'un çalışma frekansı (Hz)
+    delay: 1.0            # GPS verilerindeki gecikme (saniye)
+    magnetic_declination_radians: 0.100  # Manyetik sapma açısı (bölgenize göre ayarlayın) --Konya
+    yaw_offset: 0.0     # IMU yaw açısı ofseti (eğer IMU yanlış yönü gösteriyorsa ayarlayın)
+    zero_altitude: true # Yükseklik verisini sıfır olarak kabul et
+    broadcast_utm_transform: true  # UTM dönüşümünü yayınla
+    broadcast_utm_transform_as_parent_frame: true  # UTM dönüşümünü ana frame olarak yayınla
+    publish_filtered_gps: true  # Filtrelenmiş GPS verilerini yayınla
+    use_odometry_yaw: false  # Odometri yaw açısını kullanma
+    wait_for_datum: true  # GPS datumunu bekleyin

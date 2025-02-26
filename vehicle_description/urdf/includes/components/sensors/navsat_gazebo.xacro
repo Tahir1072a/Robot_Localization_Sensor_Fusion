@@ -3,24 +3,24 @@
 <robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:macro name="navsat_gazebo" params="navsat_name topic_ns">
-        <gazebo reference="${navsat_name}_link">
+        <gazebo reference="${navsat_name}">
             <sensor name="${navsat_name}" type="navsat">
                 <always_on>1</always_on>
-                <update_rate>10</update_rate>
-                <pose>0 0 0 0 0 0</pose>
-                <topic>${topic_ns}</topic>
+                <pose>0 0 0.05 0 0 0</pose>
+                <update_rate>50</update_rate>
+                <topic>${topic_ns}/fix</topic>
                 <navsat>
                     <position_sensing>
                         <horizontal>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.002</stddev>
+                                <stddev>0.0</stddev>
                             </noise>
                         </horizontal>
                         <vertical>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.002</stddev>
+                                <stddev>0.0</stddev>
                             </noise>
                         </vertical>
                     </position_sensing>
@@ -28,13 +28,13 @@
                         <horizontal>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.002</stddev>
+                                <stddev>0.0</stddev>
                             </noise>
                         </horizontal>
                         <vertical>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.002</stddev>
+                                <stddev>0.0</stddev>
                             </noise>
                         </vertical>
                     </velocity_sensing>

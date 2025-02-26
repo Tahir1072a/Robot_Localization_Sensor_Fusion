@@ -49,7 +49,9 @@
 
         <plugin filename="ignition-gazebo-odometry-publisher-system" name="ignition::gazebo::systems::OdometryPublisher">
             <odom_frame>odom</odom_frame>
-            <robot_base_frame>vehicle_body</robot_base_frame>
+            <odom_covariance_topic>odom</odom_covariance_topic>
+            <tf_topic>tf</tf_topic>
+            <robot_base_frame>base_link</robot_base_frame>
             <update_rate>100</update_rate>
             <publish_odom_tf>true</publish_odom_tf>
             <dimensions>3</dimensions>

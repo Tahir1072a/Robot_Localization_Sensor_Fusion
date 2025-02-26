@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
   <world name="default">
+    
     <light type="directional" name="sun">
         <cast_shadows>true</cast_shadows>
         <pose>0 0 10 0 0 0</pose>
@@ -45,9 +46,9 @@
     <spherical_coordinates>
       <surface_model>EARTH_WGS84</surface_model>
       <world_frame_orientation>ENU</world_frame_orientation>
-      <latitude_deg>37.87139</latitude_deg>   <!-- Konya -->
-      <longitude_deg>32.49889</longitude_deg> <!-- Konya -->
-      <elevation>1016</elevation>             <!-- Konya -->
+      <latitude_deg>0.0</latitude_deg>   <!-- Konya -->
+      <longitude_deg>0.0</longitude_deg> <!-- Konya -->
+      <elevation>0.0</elevation>              <!-- Konya -->
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
 

@@ -6,20 +6,20 @@
     <xacro:include filename="$(find vehicle_description)/urdf/includes.xacro" />
    
     <xacro:vehicle_body />
-    <xacro:vehicle_wheels parent="vehicle_body"/>
+    <xacro:vehicle_wheels parent="base_link"/>
             
-    <xacro:imu_sensor sensor_type="vn_100" name="imu1" topic_ns="imu1" parent="vehicle_body">
+    <xacro:imu_sensor sensor_type="vn_100" name="imu1" topic_ns="imu1" parent="base_link">
         <origin xyz="0 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0"/>
     </xacro:imu_sensor>
-    <xacro:imu_sensor sensor_type="vn_100" name="imu2" topic_ns="imu2" parent="vehicle_body">
+    <xacro:imu_sensor sensor_type="vn_100" name="imu2" topic_ns="imu2" parent="base_link">
         <origin xyz="0 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0"/>
     </xacro:imu_sensor>
-    <xacro:imu_sensor sensor_type="vn_100" name="imu3" topic_ns="imu3" parent="vehicle_body">
+    <xacro:imu_sensor sensor_type="vn_100" name="imu3" topic_ns="imu3" parent="base_link">
         <origin xyz="0 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0"/>
     </xacro:imu_sensor>
     
-    <xacro:navsat_sensor name="gps" topic_ns="navsat" parent="vehicle_body" >
-        <origin xyz="0.05 0 ${(body_height / 2) + wheel_radius}" rpy="0 0 0" />
+    <xacro:navsat_sensor name="gps" topic_ns="navsat" parent="base_link" >
+        <origin xyz="0.1 0 ${(body_height / 2) + wheel_radius + 0.005}" rpy="0 0 0" />
     </xacro:navsat_sensor>
 
 </robot>
