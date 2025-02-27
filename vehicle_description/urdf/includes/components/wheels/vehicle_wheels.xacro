@@ -60,19 +60,21 @@
 
             <xacro:sphere_inertia mass="${caster_wheel_mass}" r="${caster_wheel_radius}" />
         </link>
-
+W
         <joint name="rear_right_wheel_joint" type="continuous">
             <parent link="${parent}"/>
             <child link="rear_right_wheel"/>
-            <origin xyz="${-(body_width / 4)} ${-((body_depth / 2) + (wheel_length / 2))} ${-wheel_zoff}" rpy="-${pi/2} 0 0"/>
-            <axis xyz="0 0 1"/>
+            
+            <origin xyz="${-(body_width / 4)} ${-((body_depth / 2) + (wheel_length / 2))} 0" rpy="${pi/2} 0 0"/>
+            <axis xyz="0 0 -1"/>
             <!-- <dynamics damping="0.2" /> -->
         </joint>
 
         <joint name="rear_left_wheel_joint" type="continuous">
             <parent link="${parent}"/>
             <child link="rear_left_wheel"/>
-            <origin xyz="${-(body_width / 4)} ${((body_depth / 2) + (wheel_length / 2))} ${-wheel_zoff}" rpy="-${pi/2} 0 0"/>
+         
+            <origin xyz="${-(body_width / 4)} ${((body_depth / 2) + (wheel_length / 2))} 0" rpy="-${pi/2} 0 0"/>
             <axis xyz="0 0 1"/>
             <!-- <dynamics damping="0.2" /> -->
         </joint>
@@ -80,7 +82,7 @@
         <joint name="front_caster_wheel_joint" type="fixed">
             <parent link="${parent}"/>
             <child  link="front_caster_wheel"/>
-            <origin xyz="${body_width / 4} 0 ${-wheel_zoff}"/>
+            <origin xyz="${body_width / 4} 0 0"/>
         </joint>
 
     </xacro:macro>

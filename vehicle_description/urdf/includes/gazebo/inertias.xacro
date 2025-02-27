@@ -7,6 +7,9 @@
     
     <xacro:macro name="solid_cuboid_inertia" params="mass x y z">
         <inertial>
+            <!-- 
+            <xacro:insert_block name="origin"/>
+            -->
             <mass value="${mass}"/>
             <inertia ixx="${mass * (y * y + z * z) / 12}" ixy="0" ixz="0"
                      iyy="${mass * (x * x + z * z) / 12}" iyz="0"
@@ -17,6 +20,9 @@
 
     <xacro:macro name="cylinder_inertia" params="mass r h">
         <inertial>
+            <!-- 
+            <xacro:insert_block name="origin"/>
+            -->
             <mass value="${mass}" />
             <inertia ixx="${mass * (3 * r * r + h * h) / 12}" ixy="0" ixz="0"
                      iyy="${mass * (3 * r * r + h * h) / 12}" iyz="0"
@@ -27,6 +33,9 @@
 
     <xacro:macro name="sphere_inertia" params="mass r">
         <inertial>
+            <!-- 
+            <xacro:insert_block name="origin"/>
+            -->
             <mass value="${mass}" />
             <inertia ixx="${mass * (2 * r * r) / 5}" ixy="0" ixz="0"
                      iyy="${mass * (2 * r * r) / 5}" iyz="0"
