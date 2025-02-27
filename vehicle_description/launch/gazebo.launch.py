@@ -1,7 +1,6 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable, RegisterEventHandler
-from launch.event_handlers import OnProcessExit
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -92,24 +91,18 @@ def generate_launch_description():
         arguments=["diff_drive_robot_controller", "--controller-manager", "/controller_manager"],
         output="screen"
     )
-
+    """
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[vehicle_controllers_yaml, vehicle_controllers_yaml,  {"robot_description": vehicle_description}],
+        parameters=[vehicle_controllers_yaml],
         output=["both"],
         remappings=[
             ("~/robot_description", "/robot_description"),
             ("/diffbot_base_controller/cmd_vel", "/cmd_vel"),
         ]
-    )
-
-    delay_diff_drive_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[vehicle_controller_spawner]
-        )
-    )
+    )   
+    """
 
     rviz2 = Node(
         package="rviz2",
@@ -127,7 +120,6 @@ def generate_launch_description():
         gazebo,
         gz_spawn_enttiy,
         gz_ros2_bridge,
-        control_node,
         vehicle_controller_spawner,
         joint_state_broadcaster_spawner,
         rviz2

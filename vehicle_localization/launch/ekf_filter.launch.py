@@ -28,15 +28,7 @@ def generate_launch_description():
         ]
     )
 
-    ekf_node_local = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_filter_node_odom',
-        output='screen',
-        parameters=[os.path.join(vehicle_localization_dir, "config", "ekf_with_gps.yaml")]
-    )
-
-    ekf_node_global = Node(
+    ekf_node = Node(
         package="robot_localization",
         executable="ekf_node",
         name="ekf_filter_node_map",
@@ -47,5 +39,5 @@ def generate_launch_description():
     return LaunchDescription([
         gps_transform,
         navsat_transform,
-        ekf_node_global
+        ekf_node
     ])
