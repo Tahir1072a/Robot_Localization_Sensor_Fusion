@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import rclpy
 import time
-import random
 
 from rclpy.node import Node
 

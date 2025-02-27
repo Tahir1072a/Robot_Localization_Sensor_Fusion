@@ -1,6 +1,7 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable, RegisterEventHandler
+from launch.event_handlers import OnProcessExit
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -95,12 +96,19 @@ def generate_launch_description():
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[vehicle_controllers_yaml],
+        parameters=[vehicle_controllers_yaml, vehicle_controllers_yaml,  {"robot_description": vehicle_description}],
         output=["both"],
         remappings=[
             ("~/robot_description", "/robot_description"),
             ("/diffbot_base_controller/cmd_vel", "/cmd_vel"),
         ]
+    )
+
+    delay_diff_drive_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[vehicle_controller_spawner]
+        )
     )
 
     rviz2 = Node(

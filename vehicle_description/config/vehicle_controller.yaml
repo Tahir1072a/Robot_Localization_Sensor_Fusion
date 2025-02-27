@@ -28,8 +28,9 @@ diff_drive_robot_controller:
     left_wheel_radius_multiplier: 1.0
     right_wheel_radius_multiplier: 1.0
     # Bu süre boyunca herhangi bir komut gelmesse motorları durdur!
-    cmd_vel_timeout: 0.5
-    base_frame_id: base_footprint
+    cmd_vel_timeout: 1.0
+    base_frame_id: "base_link"
+    odom_frame_id: "odom"
     publish_limited_velocity: true
     publish_wheel_data: true
     enable_odom_tf: true
@@ -47,8 +48,10 @@ diff_drive_robot_controller:
     angular:
       z:
         has_velocity_limits: true
-        max_velocity: 1.7
+        max_velocity: 5.0
+        min_velocity: -5.0
         has_acceleration_limits: true
-        max_acceleration: 1.5
+        max_acceleration: 3.0
+        min_acceleration: -3.0
         has_jerk_limits: false
         max_jerk: 2.5 
