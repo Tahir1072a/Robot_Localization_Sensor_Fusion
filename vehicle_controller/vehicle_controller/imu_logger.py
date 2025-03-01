@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 import pandas as pd
+import numpy as np
 
 from pathlib import Path
 
@@ -20,6 +21,7 @@ class ImuLogger(Node):
         self.df = pd.DataFrame(columns=[
             "time", "pose_x", "pose_y", "pose_z",
             "estimated_pose_x", "estimated_pose_y", "estimated_pose_z",
+            "error_x_square", "error_y_square", "error_z_square",
             "ax1", "ay1", "az1", "gx1", "gy1", "gz1",
             "ax2", "ay2", "az2", "gx2", "gy2", "gz2",
             "ax3", "ay3", "az3", "gx3", "gy3", "gz3"
@@ -112,6 +114,7 @@ class ImuLogger(Node):
     
     def prepare_data(self, timestamp):
         data = self.buffer[timestamp]
+        error_x, error_y, error_z = self.calculate_squart_err(data)
 
         row = {
             "time": timestamp,
@@ -120,7 +123,10 @@ class ImuLogger(Node):
             "pose_z": data["pose"]["pose_z"],
             "estimated_pose_x": data["estimated_pose"]["estimated_pose_x"],
             "estimated_pose_y": data["estimated_pose"]["estimated_pose_y"],
-            "estimated_pose_z": data["estimated_pose"]["estimated_pose_z"]
+            "estimated_pose_z": data["estimated_pose"]["estimated_pose_z"],
+            "error_x_square": error_x,
+            "error_y_square": error_y,
+            "error_z_square": error_z
         }
 
         for imu_id in ["imu1", "imu2", "imu3"]:
@@ -157,20 +163,45 @@ class ImuLogger(Node):
     def loop_info_callback(self, msg):
         if msg.data:
             self.is_finished = True
+            rmse_x, rmse_y, rmse_z = self.calculate_RMSE()
+            #Son satıra mse değerini ekle!
+            index = self.df.index[-1] + 1
+            self.df.loc[index, "error_x_square"] = rmse_x
+            self.df.loc[index, "error_y_square"] = rmse_y
+            self.df.loc[index, "error_z_square"] = rmse_z
 
-            #excel dosyasına kaydet
-            new_excel_path = "imu_saved_data.xlsx"
-            destination_excel_path = Path(new_excel_path)
-            for i in range(1, 10):
-                if not destination_excel_path.exists():
-                    break
-                new_excel_path = f"imu_saved_data{i}.xlsx"
-                destination_excel_path = Path(new_excel_path)
-            self.df.to_excel(destination_excel_path, index=False)
-
+            self.save_to_excel_file()
             rclpy.shutdown()
             self.destroy_node()
+
+    def calculate_squart_err(self, data):
+        pose_x, pose_y, pose_z = data["pose"]["pose_x"], data["pose"]["pose_y"], data["pose"]["pose_z"]
+        estimated_pose_x, estimated_pose_y, estimated_pose_z = data["estimated_pose"]["estimated_pose_x"], data["estimated_pose"]["estimated_pose_y"], data["estimated_pose"]["estimated_pose_z"]
+        
+        # Bu yöntemi araştır??
+        #return ((pose_x - estimated_pose_x) ** 2 + (pose_y - estimated_pose_y) ** 2 + (pose_z - estimated_pose_z) ** 2) / 3
+        return (pose_x - estimated_pose_x) ** 2, (pose_y - estimated_pose_y) ** 2, (pose_z - estimated_pose_z) ** 2
     
+    """ Root Mean Squared Error"""
+    def calculate_RMSE(self):
+        # 0 değerleri satırları temizle!
+        self.df = self.df[self.df["estimated_pose_x"] != 0]
+
+        errors_x_square, errors_y_square, errors_z_square = self.df["error_x_square"].to_numpy(), self.df["error_y_square"].to_numpy(), self.df["error_z_square"].to_numpy()
+        rmse_x, rmse_y, rmse_z = np.sqrt(np.mean(errors_x_square)), np.sqrt(np.mean(errors_y_square)), np.sqrt(np.mean(errors_z_square))
+        return rmse_x, rmse_y, rmse_z
+
+    def save_to_excel_file(self):
+        #excel dosyasına kaydet
+        new_excel_path = "imu_saved_data.xlsx"
+        destination_excel_path = Path(new_excel_path)
+        for i in range(1, 10):
+            if not destination_excel_path.exists():
+                break
+            new_excel_path = f"imu_saved_data{i}.xlsx"
+            destination_excel_path = Path(new_excel_path)
+        self.df.to_excel(destination_excel_path, index=False)
+
 def main():
     rclpy.init()
     node = ImuLogger()
