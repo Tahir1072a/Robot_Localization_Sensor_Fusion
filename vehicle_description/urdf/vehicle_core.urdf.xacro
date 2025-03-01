@@ -17,7 +17,7 @@
     <xacro:imu_sensor sensor_type="vn_100" name="imu3" topic_ns="imu3" parent="base_link">
         <origin xyz="0 0 ${(body_height / 2) + 0.0015 + wheel_radius}" rpy="0 0 0"/>
     </xacro:imu_sensor>
-    <xacro:navsat_sensor name="gps" topic_ns="navsat" parent="base_link" >
+    <xacro:navsat_sensor sensor_type="vn_200" name="gps" topic_ns="navsat" parent="base_link" >
         <origin xyz="0.1 0 ${(body_height / 2) + 0.005 + wheel_radius}" rpy="0 0 0" />
     </xacro:navsat_sensor>
 

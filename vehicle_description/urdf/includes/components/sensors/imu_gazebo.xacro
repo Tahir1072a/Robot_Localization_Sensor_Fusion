@@ -84,25 +84,25 @@
                         <x>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>9.94e-4</stddev>
+                                <stddev>6.11e-5</stddev> <!-- radyan cinsinden -->
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>4.848e-6</bias_stddev> <!-- radyan cinsinden -->
+                                <bias_stddev>4.848e-5</bias_stddev> <!-- radyan cinsinden -->
                             </noise>
                         </x>
                         <y>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>9.94e-4</stddev>
+                                <stddev>6.11e-5</stddev> 
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>4.848e-6</bias_stddev>
+                                <bias_stddev>4.848e-5</bias_stddev>
                             </noise>
                         </y>
                         <z>
-                            <noise type="gaussian">
+                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>9.94e-4</stddev>
+                                <stddev>6.11e-5</stddev> 
                                 <bias_mean>0.0</bias_mean>
-                                <bias_stddev>4.848e-6</bias_stddev>
+                                <bias_stddev>4.848e-5</bias_stddev>
                             </noise>
                         </z>
                     </angular_velocity>
@@ -110,7 +110,7 @@
                         <x>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.02082152953</stddev>
+                                <stddev>0.001373</stddev> <!-- m/s^2 cinsinden. -->
                                 <bias_mean>0.0</bias_mean>
                                 <bias_stddev>3.92e-4</bias_stddev> <!-- m/s^2 cinsinden. -->
                             </noise>
@@ -118,7 +118,7 @@
                         <y>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.02082152953</stddev>
+                                <stddev>0.001373</stddev>
                                 <bias_mean>0.0</bias_mean>
                                 <bias_stddev>3.92e-4</bias_stddev>
                             </noise>
@@ -126,7 +126,7 @@
                         <z>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.02082152953</stddev>
+                                <stddev>0.001373</stddev>
                                 <bias_mean>0.0</bias_mean>
                                 <bias_stddev>3.92e-4</bias_stddev>
                             </noise>

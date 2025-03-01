@@ -4,7 +4,7 @@ ekf_filter_node:
     use_sim_time: true
     frequency: 100.0
     sensor_timeout: 1.0
-    two_d_mode: true
+    two_d_mode: false
     transform_time_offset: 0.0
     transform_timeout: 0.0
     print_diagnostic: true

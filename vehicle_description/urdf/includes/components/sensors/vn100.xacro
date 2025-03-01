@@ -5,8 +5,8 @@
     <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/imu_gazebo.xacro" /> 
 
     <!-- VN100 CONSTANST https://www.vectornav.com/docs/default-source/product-brief/vn-100-product-brief.pdf?sfvrsn=a2a5ae5f_2 -->
-    <xacro:property name="vn100_depth" value="0.022" />
     <xacro:property name="vn100_width" value="0.024" />
+    <xacro:property name="vn100_depth" value="0.022" />
     <xacro:property name="vn100_height" value="0.003"/>
     <xacro:property name="vn100_mass" value="0.0035"/>
 

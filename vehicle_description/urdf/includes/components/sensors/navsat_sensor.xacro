@@ -3,35 +3,16 @@
 <robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/navsat_gazebo.xacro" />
+    <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/vn200.xacro" />
 
-    <xacro:macro name="navsat_sensor" params="name topic_ns:=navsat parent *origin">
-        <joint name="${name}_joint" type="fixed">
-            <parent link="${parent}"/>
-            <child link="${name}"/>
-            <xacro:insert_block name="origin" />
-        </joint>
+    <xacro:macro name="navsat_sensor" params="sensor_type name topic_ns:=imu parent *origin">
 
-        <link name="${name}">
-            <visual>
-                <origin xyz="0 0 0"/>
-                <geometry>
-                    <box size="0.01 0.01 0.01"/>
-                </geometry>
-                <material name="silver"/>
-            </visual>
-
-            <collision>
-                <origin xyz="0 0 0"/>
-                <geometry>
-                    <box size="0.01 0.01 0.01"/>
-                </geometry>
-            </collision>
-
-            <xacro:solid_cuboid_inertia mass="0.01" x="0.01" y="0.01" z="0.01" />
-        </link>
-
-        <xacro:navsat_gazebo navsat_name="${name}" topic_ns="${topic_ns}"/>
-
+        <xacro:if value="${sensor_type == 'vn_200'}">
+            <xacro:vn_100 name="${name}" topic_ns="${topic_ns}" parent="${parent}">
+                <xacro:insert_block name="origin"/>
+            </xacro:vn_100>
+        </xacro:if>
+        
     </xacro:macro>
 
 </robot>

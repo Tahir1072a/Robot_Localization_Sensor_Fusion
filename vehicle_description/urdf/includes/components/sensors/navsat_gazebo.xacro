@@ -2,57 +2,48 @@
 
 <robot name="vehicle" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <!-- https://content.u-blox.com/sites/default/files/NEO-M8U_DataSheet_UBX-15015679.pdf -->
+    <!--https://www.vectornav.com/docs/default-source/product-brief/vn-200-product-brief.pdf?sfvrsn=5bda007a_2 -->
     <xacro:macro name="navsat_gazebo" params="navsat_name topic_ns">
         <gazebo reference="${navsat_name}">
             <sensor name="${navsat_name}" type="navsat">
                 <always_on>1</always_on>
                 <pose>0 0 0.05 0 0 0</pose> 
                 <update_rate>10</update_rate> <!-- Güncelleme frekansı (Hz) -->
-                <topic>${topic_ns}/fix</topic> 
-
+                <topic>${topic_ns}/fix</topic>
+                
                 <navsat>
-                    <!-- Konum Ölçümü -->
                     <position_sensing>
                         <horizontal>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>2.5</stddev> <!-- Yatay doğruluk (2.5 metre)  Not, SBAS ile 1.5 metre !! -->
+                                <stddev>1.0</stddev> 
                             </noise>
                         </horizontal>
                         <vertical>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>3.5</stddev> <!-- Dikey doğruluk (3.5 metre) (SBAS => uydu tabanlı arttırma sistemi) -->
+                                <stddev>1.5</stddev> 
                             </noise>
                         </vertical>
                     </position_sensing>
 
-                    <!-- Hız Ölçümü -->
+                    
                     <velocity_sensing>
                         <horizontal>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.05</stddev> <!-- Hız doğruluğu (0.05 m/s) -->
+                                <stddev>0.05</stddev> 
                             </noise>
                         </horizontal>
                         <vertical>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>0.1</stddev> <!-- Dikey hızda daha fazla hata -->
+                                <stddev>0.05</stddev>
                             </noise>
                         </vertical>
                     </velocity_sensing>
-
-                    <!-- ?? 
-                    <multipath>
-                        <noise type="gaussian">
-                            <mean>0.0</mean>
-                            <stddev>2.0</stddev> 
-                        </noise>
-                    </multipath>
-                    -->
                 </navsat>
+                
             </sensor>
         </gazebo>
     </xacro:macro>

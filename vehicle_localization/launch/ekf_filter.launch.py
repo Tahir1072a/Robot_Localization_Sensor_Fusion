@@ -21,7 +21,7 @@ def generate_launch_description():
         executable="navsat_transform_node",
         name="navsat_transform",
         output="screen",
-        parameters=[os.path.join(vehicle_localization_dir, "config", "ekf_with_gps.yaml"),{"use_sim_time": True}],
+        parameters=[os.path.join(vehicle_localization_dir, "config", "ekf_all.yaml"),{"use_sim_time": True}],
         remappings=[
             ("gps/fix", "/navsat/fix"),
             ("imu", "/imu1")
@@ -33,7 +33,7 @@ def generate_launch_description():
         executable="ekf_node",
         name="ekf_filter_node_map",
         output='screen',
-        parameters=[os.path.join(vehicle_localization_dir, "config", "ekf_with_gps.yaml")]
+        parameters=[os.path.join(vehicle_localization_dir, "config", "ekf_all.yaml")]
     )
 
     return LaunchDescription([

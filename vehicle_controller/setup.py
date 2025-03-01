@@ -22,7 +22,8 @@ setup(
         'console_scripts': [
             "imu_logger= vehicle_controller.imu_logger:main",
             "self_control= vehicle_controller.self_control:main",
-            "circular_motion= vehicle_controller.circular_motion:main"
+            "circular_motion= vehicle_controller.circular_motion:main",
+            "draw_graph=vehicle_controller.draw_graph:main"
         ],
     },
 )
