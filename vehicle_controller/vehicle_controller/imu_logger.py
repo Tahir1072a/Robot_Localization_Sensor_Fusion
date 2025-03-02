@@ -2,6 +2,7 @@
 import rclpy
 import pandas as pd
 import numpy as np
+import copy
 
 from pathlib import Path
 
@@ -32,6 +33,10 @@ class ImuLogger(Node):
         self.queue = Queue()
         self.is_finished = False
 
+        self.imu1_buffer = {}
+        self.imu2_buffer = {}
+        self.imu3_buffer = {}
+
         self.w_thread = Thread(target=self.write_to_file, daemon=True)
         self.w_thread.start()
 
@@ -39,11 +44,14 @@ class ImuLogger(Node):
         self.imu2_sub = self.create_subscription(Imu, "/imu2", lambda msg: self.imu_sub_callback(msg, "imu2"), 30)
         self.imu3_sub = self.create_subscription(Imu, "/imu3", lambda msg: self.imu_sub_callback(msg, "imu3"), 30)
 
+        self.imu12_pub = self.create_publisher(Imu, "/imu12", 50)
+        self.imu123_pub = self.create_publisher(Imu, "/imu123", 50)
+
         self.vehicle_pose_sub = self.create_subscription(TFMessage, "/vehicle/real_pose", self.vehicle_real_pose_callback, 30)
         self.ekf_filtered_odom_sub = self.create_subscription(Odometry, "/odometry/filtered", self.ekf_filtered_odom ,30)
 
         self.loop_info_sub = self.create_subscription(Bool, "loop_info", self.loop_info_callback, 5)
-
+    
     #Son gelen veri!!
     def ekf_filtered_odom(self, msg):
         estimated_pose = msg.pose.pose.position
@@ -85,11 +93,28 @@ class ImuLogger(Node):
     def imu_sub_callback(self, msg, imu_id):
         timestamp = self.get_timestamp(msg)
 
-        #self.get_logger().info(f"Imu: {timestamp}")
+        
+        if imu_id == "imu1":
+            self.imu1_buffer[timestamp] = msg
+            if timestamp in self.imu2_buffer:
+                self.combine_and_publish_imu12(timestamp)
+                if timestamp in self.imu3_buffer:
+                    self.combine_and_publish_imu123(timestamp)
+        elif imu_id == "imu2":
+            self.imu2_buffer[timestamp] = msg
+            if timestamp in self.imu1_buffer:
+                self.combine_and_publish_imu12(timestamp)
+                if timestamp in self.imu3_buffer:
+                    self.combine_and_publish_imu123(timestamp)
+        elif imu_id == "imu3":
+            self.imu3_buffer[timestamp] = msg
+            if timestamp in self.imu1_buffer and timestamp in self.imu2_buffer:
+                self.combine_and_publish_imu123(timestamp)
 
         if self.buffer.get(timestamp) is None:
             self.buffer[timestamp] = {}
-
+        
+        #self.get_logger().info(f"Imu: {timestamp}")
         #self.get_logger().info("-----------------------------DEBUG-------------------------------")
         #self.get_logger().info(f"Processing {imu_id} data for timestamp: {timestamp}")
         #self.get_logger().info(str(self.buffer[timestamp]))
@@ -105,13 +130,37 @@ class ImuLogger(Node):
                 "gy": msg.angular_velocity.y,
                 "gz": msg.angular_velocity.z,
             }
-            
-        """
-        if len(self.buffer[timestamp]) == 5:
-            self.get_logger().info("Okey")
-            self.prepare_data(timestamp)
-        """
     
+    def combine_and_publish_imu123(self, timestamp):
+        imu1_msg = copy.deepcopy(self.imu1_buffer[timestamp])
+        imu2_msg = copy.deepcopy(self.imu2_buffer[timestamp])
+        imu3_msg = copy.deepcopy(self.imu3_buffer[timestamp])
+
+        linear_acceleration_x = (imu1_msg.linear_acceleration.x + imu2_msg.linear_acceleration.x + imu3_msg.linear_acceleration.x) / 3
+        linear_acceleration_y = (imu1_msg.linear_acceleration.y + imu2_msg.linear_acceleration.y + imu3_msg.linear_acceleration.y) / 3
+        linear_acceleration_z = (imu1_msg.linear_acceleration.z + imu2_msg.linear_acceleration.z + imu3_msg.linear_acceleration.z) / 3
+        imu1_msg.linear_acceleration.x = linear_acceleration_x
+        imu1_msg.linear_acceleration.y = linear_acceleration_y
+        imu1_msg.linear_acceleration.z = linear_acceleration_z
+        self.imu123_pub.publish(imu1_msg)
+
+        with self.buffer_lock:
+            del self.imu1_buffer[timestamp]
+            del self.imu2_buffer[timestamp]
+            del self.imu3_buffer[timestamp]
+
+    def combine_and_publish_imu12(self, timestamp):
+        imu1_msg = copy.deepcopy(self.imu1_buffer[timestamp])
+        imu2_msg = copy.deepcopy(self.imu2_buffer[timestamp])
+
+        linear_acceleration_x = (imu1_msg.linear_acceleration.x + imu2_msg.linear_acceleration.x) / 2
+        linear_acceleration_y = (imu1_msg.linear_acceleration.y + imu2_msg.linear_acceleration.y) / 2
+        linear_acceleration_z = (imu1_msg.linear_acceleration.z + imu2_msg.linear_acceleration.z) / 2
+        imu1_msg.linear_acceleration.x = linear_acceleration_x
+        imu1_msg.linear_acceleration.y = linear_acceleration_y
+        imu1_msg.linear_acceleration.z = linear_acceleration_z
+        self.imu12_pub.publish(imu1_msg)
+
     def prepare_data(self, timestamp):
         data = self.buffer[timestamp]
         error_x, error_y, error_z = self.calculate_squart_err(data)
@@ -164,6 +213,7 @@ class ImuLogger(Node):
         if msg.data:
             self.is_finished = True
             rmse_x, rmse_y, rmse_z = self.calculate_RMSE()
+            
             #Son satıra mse değerini ekle!
             index = self.df.index[-1] + 1
             self.df.loc[index, "error_x_square"] = rmse_x
@@ -186,6 +236,7 @@ class ImuLogger(Node):
     def calculate_RMSE(self):
         # 0 değerleri satırları temizle!
         self.df = self.df[self.df["estimated_pose_x"] != 0]
+        self.df = self.df[self.df["time"].apply(float) <= 20.025]
 
         errors_x_square, errors_y_square, errors_z_square = self.df["error_x_square"].to_numpy(), self.df["error_y_square"].to_numpy(), self.df["error_z_square"].to_numpy()
         rmse_x, rmse_y, rmse_z = np.sqrt(np.mean(errors_x_square)), np.sqrt(np.mean(errors_y_square)), np.sqrt(np.mean(errors_z_square))

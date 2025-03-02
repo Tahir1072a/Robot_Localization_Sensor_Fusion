@@ -1,7 +1,7 @@
 import os
 from launch_ros.actions import Node
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, TimerAction
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
@@ -28,8 +28,19 @@ def generate_launch_description():
         )
     )
 
+    self_control = Node(
+        package="vehicle_controller",
+        executable="self_control"
+    )
+
+    delay_self_control = TimerAction(
+        period=1.0,
+        actions=[self_control]
+    )
+
     return LaunchDescription([
         gazebo,
         imu_logger_node,
-        ekf_filter
+        ekf_filter,
+        delay_self_control
     ])

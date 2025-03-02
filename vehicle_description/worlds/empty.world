@@ -49,7 +49,7 @@
       <world_frame_orientation>ENU</world_frame_orientation>
       <latitude_deg>37.8714</latitude_deg>   <!-- Konya -->
       <longitude_deg>32.4989</longitude_deg> <!-- Konya -->
-      <elevation>0.0</elevation>              <!-- Konya -->
+      <elevation>0.0</elevation>             <!-- Konya -->
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
 

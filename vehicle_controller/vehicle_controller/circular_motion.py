@@ -47,8 +47,8 @@ class CircularMotionController(Node):
         
         self.cmd_vel_pub.publish(msg)
 
-def main(args=None):
-    rclpy.init(args=args)
+def main():
+    rclpy.init()
     
     controller = CircularMotionController()
     

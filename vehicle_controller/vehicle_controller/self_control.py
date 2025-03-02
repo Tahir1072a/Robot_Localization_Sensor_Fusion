@@ -20,7 +20,7 @@ class SelfControl(Node):
         self.timer = self.create_timer(self.frequency, self.loop_info_callback)
         self.is_loop_finished = False
 
-        self.speed = 1.5
+        self.speed = 1.2
         self.distance_to_travel = 5.0
         self.current_distance = 0.0
         self.start_position = None
@@ -38,14 +38,14 @@ class SelfControl(Node):
         if self.is_moving_forward and self.current_distance >= self.distance_to_travel:
             self.get_logger().info(f"Hedefe varıldı: {self.current_distance} metre")
             self.stop_vehicle()
-            time.sleep(2)
+            time.sleep(1.5)
             self.is_moving_forward = False
         elif self.is_moving_forward:
             self.move_forward()
         elif not self.is_moving_forward and self.current_distance <= 0.1:
-            self.get_logger().info("Araç başlangıç noktasına geri döndü.")
             self.stop_vehicle()
-            time.sleep(2)
+            time.sleep(1.5)
+            self.get_logger().info("Araç başlangıç noktasına geri döndü.")
             self.is_loop_finished = True
         elif not self.is_moving_forward:
             self.move_backward()

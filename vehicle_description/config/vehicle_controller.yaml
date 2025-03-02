@@ -39,19 +39,19 @@ diff_drive_robot_controller:
       x:
         has_velocity_limits: true
         max_velocity: 5.0
-        min_velocity: -5.0
+        min_velocity: -3.0
         has_acceleration_limits: true
         max_acceleration: 3.0
-        min_acceleration: -3.0
-        has_jerk_limits: false
-        max_jerk: 5.0
+        min_acceleration: -2.0
+        has_jerk_limits: true
+        max_jerk: 10.0
     angular:
       z:
         has_velocity_limits: true
-        max_velocity: 5.0
-        min_velocity: -5.0
+        max_velocity: 2.0
+        min_velocity: -2.0
         has_acceleration_limits: true
-        max_acceleration: 3.0
-        min_acceleration: -3.0
-        has_jerk_limits: false
-        max_jerk: 2.5 
+        max_acceleration: 2.0
+        min_acceleration: -2.0
+        has_jerk_limits: true
+        max_jerk: 10.0 

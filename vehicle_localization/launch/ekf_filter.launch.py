@@ -31,7 +31,7 @@ def generate_launch_description():
     ekf_node = Node(
         package="robot_localization",
         executable="ekf_node",
-        name="ekf_filter_node_map",
+        name="w_encoder_single_imu",
         output='screen',
         parameters=[os.path.join(vehicle_localization_dir, "config", "ekf_all.yaml")]
     )
