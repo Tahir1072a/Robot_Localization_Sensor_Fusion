@@ -236,7 +236,7 @@ class ImuLogger(Node):
     def calculate_RMSE(self):
         # 0 değerleri satırları temizle!
         self.df = self.df[self.df["estimated_pose_x"] != 0]
-        self.df = self.df[self.df["time"].apply(float) <= 20.025]
+        self.df = self.df[self.df["time"].apply(float) <= 40.705]
 
         errors_x_square, errors_y_square, errors_z_square = self.df["error_x_square"].to_numpy(), self.df["error_y_square"].to_numpy(), self.df["error_z_square"].to_numpy()
         rmse_x, rmse_y, rmse_z = np.sqrt(np.mean(errors_x_square)), np.sqrt(np.mean(errors_y_square)), np.sqrt(np.mean(errors_z_square))
