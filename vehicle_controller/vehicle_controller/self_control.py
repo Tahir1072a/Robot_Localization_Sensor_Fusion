@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 import rclpy
 import time
-import math
 
 from tf_transformations import euler_from_quaternion
 
 from rclpy.node import Node
 
 from geometry_msgs.msg import TwistStamped
-from nav_msgs.msg import Odometry
 from tf2_msgs.msg import TFMessage
 
 from std_msgs.msg import Bool

@@ -24,9 +24,11 @@ class DrawGrapNode(Node):
 
     def draw_graph(self, df, name):
         rmse_x = df["error_x_square"].iloc[-1]
-        print(rmse_x)
+        rmse_y = df["error_y_square"].iloc[-1]
+
         plt.figure(figsize=(12,6)) # Width
 
+        plt.subplot(1, 2, 1)
         plt.plot(df["time"], df['pose_x'], color="tab:blue", label="real_pose")
         plt.plot(df["time"], df['estimated_pose_x'], color='tab:red', label="estimated_pose")
 
@@ -43,7 +45,26 @@ class DrawGrapNode(Node):
         plt.grid(True, linestyle="--", alpha=0.7)
 
         plt.xticks(ticks=np.arange(0, df["time"].max(), step=1.0))
-        plt.yticks(ticks=np.arange(0, df["pose_x"].max(), step=1.0))
+        plt.yticks(ticks=np.arange(0, df["pose_x"].max(), step=0.3))
+
+        plt.subplot(1, 2, 2)
+        plt.xlabel('Timestamp', fontsize=12)
+        plt.ylabel('Pose-Y', fontsize=12)
+
+        plt.plot(df["time"], df['pose_y'], color="tab:blue", label="real_pose")
+        plt.plot(df["time"], df['estimated_pose_y'], color='tab:red', label="estimated_pose")
+
+        plt.legend(loc='upper right', fontsize=10, shadow=True, framealpha=1.0)
+
+        plt.text(0.05, 0.95, f"RMSE: {rmse_y}", 
+         transform=plt.gca().transAxes, fontsize=10, color='black', 
+         ha='left', va='top', bbox=dict(facecolor='white', alpha=0.7, edgecolor='black'))
+
+        plt.title(f'{name} yöntemi y ekseni hareket grafiği', fontsize=14, fontweight="bold")
+        plt.grid(True, linestyle="--", alpha=0.7)
+
+        plt.xticks(ticks=np.arange(0, df["time"].max(), step=1.0))
+        plt.yticks(ticks=np.arange(0, df["pose_y"].max(), step=0.3))
     
         plt.show()
 

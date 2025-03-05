@@ -30,7 +30,7 @@ def generate_launch_description():
 
     self_control = Node(
         package="vehicle_controller",
-        executable="self_control"
+        executable="rectangle_motion"
     )
 
     delay_self_control = TimerAction(

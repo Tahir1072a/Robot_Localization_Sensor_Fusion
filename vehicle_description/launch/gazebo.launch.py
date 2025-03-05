@@ -91,7 +91,7 @@ def generate_launch_description():
         arguments=["diff_drive_robot_controller", "--controller-manager", "/controller_manager"],
         output="screen"
     )
-    """
+    
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -102,7 +102,7 @@ def generate_launch_description():
             ("/diffbot_base_controller/cmd_vel", "/cmd_vel"),
         ]
     )   
-    """
+    
 
     rviz2 = Node(
         package="rviz2",
@@ -122,5 +122,5 @@ def generate_launch_description():
         gz_ros2_bridge,
         vehicle_controller_spawner,
         joint_state_broadcaster_spawner,
-        rviz2
+        control_node
     ])
