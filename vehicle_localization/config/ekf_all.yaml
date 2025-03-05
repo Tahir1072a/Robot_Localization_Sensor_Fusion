@@ -48,6 +48,7 @@ w_encoder_single_imu:
     imu0_twist_rejection_threshold: 0.7                
     imu0_linear_acceleration_rejection_threshold: 0.8
     imu0_remove_gravitational_acceleration: true
+
     use_control: false
     stamped_control: false
     control_timeout: 0.2
@@ -124,7 +125,7 @@ all_single_imu:
 
     odom0_pose_rejection_threshold: 5.0
     odom0_twist_rejection_threshold: 1.0
-
+    
     odom1: diff_drive_robot_controller/odom
     odom1_config: [true, true, true,
                    false, false, false,
@@ -134,9 +135,9 @@ all_single_imu:
 
     odom1_queue_size: 10
     odom1_nodelay: false
-    odom1_differential: false
+    odom1_differential: true
     odom1_relative: false
-
+    
     imu0: imu1
     imu0_config: [false, false, false,
                   true,  true,  true,
@@ -410,7 +411,7 @@ all_multiple_imu_basic_mean:
 
     odom0_queue_size: 2
     odom0_nodelay: false
-    odom0_differential: false
+    odom0_differential: true
     odom0_relative: false
 
     odom0_pose_rejection_threshold: 5.0
@@ -428,7 +429,7 @@ all_multiple_imu_basic_mean:
     odom1_differential: true
     odom1_relative: false
 
-    odom1_pose_rejection_threshold: 5.0
+    odom1_pose_rejection_threshold: 1.5
     odom1_twist_rejection_threshold: 1.0
 
     imu0: imu12
@@ -518,10 +519,10 @@ all_multiple_imu_basic_mean_2:
 
     odom0_queue_size: 2
     odom0_nodelay: false
-    odom0_differential: false
+    odom0_differential: true
     odom0_relative: false
 
-    odom0_pose_rejection_threshold: 5.0
+    odom0_pose_rejection_threshold: 2.0
     odom0_twist_rejection_threshold: 1.0
 
     odom1: odometry/gps
@@ -536,7 +537,7 @@ all_multiple_imu_basic_mean_2:
     odom1_differential: true
     odom1_relative: false
 
-    odom1_pose_rejection_threshold: 5.0
+    odom1_pose_rejection_threshold: 1.5
     odom1_twist_rejection_threshold: 1.0
 
     imu0: imu123

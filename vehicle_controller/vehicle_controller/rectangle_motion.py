@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import rclpy
+import time
 from rclpy.node import Node
 
 from tf_transformations import euler_from_quaternion
@@ -20,9 +21,9 @@ class RectangleMotion(Node):
         self.timer = self.create_timer(self.frequency, self.loop_info_callback)
         self.is_loop_finished = False
 
-        self.linear_speed = 1.2
-        self.angular_speed = 0.4
-        self.rectangle_size = 3.5
+        self.linear_speed = 1.5
+        self.angular_speed = 0.35
+        self.rectangle_size = 5.5
         self.current_distance_x = 0.0
         self.start_position = None
         self.is_turn = False
@@ -40,6 +41,7 @@ class RectangleMotion(Node):
             self.loop_counter += 1
             if self.loop_counter > 4:
                 self.is_loop_finished = True
+                time.sleep(1)
             return
         if self.is_loop_finished:
             return
@@ -72,7 +74,6 @@ class RectangleMotion(Node):
             self.move_forward()
         elif self.is_turn:
             self.turn_right()
-        #self.get_logger().info(str(abs(self.current_yaw)))
 
     def move_forward(self):
         msg = TwistStamped()

@@ -23,7 +23,7 @@ diff_drive_robot_controller:
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
 
     wheel_separation: 0.50
-    wheel_radius: 0.05
+    wheel_radius: 0.049
 
     wheel_separation_multiplier: 1.0
     left_wheel_radius_multiplier: 1.0

@@ -37,14 +37,14 @@ class DrawGrapNode(Node):
         
         plt.legend(loc='upper right', fontsize=10, shadow=True, framealpha=1.0)
 
-        plt.text(0.05, 0.95, f"RMSE: {rmse_x}", 
+        plt.text(-0.05, 1.12, f"RMSE: {rmse_x}", 
          transform=plt.gca().transAxes, fontsize=10, color='black', 
          ha='left', va='top', bbox=dict(facecolor='white', alpha=0.7, edgecolor='black'))
 
         plt.title(f'{name} yöntemi x ekseni hareket grafiği', fontsize=14, fontweight="bold")
         plt.grid(True, linestyle="--", alpha=0.7)
 
-        plt.xticks(ticks=np.arange(0, df["time"].max(), step=1.0))
+        plt.xticks(ticks=np.arange(0, df["time"].max(), step=2.0))
         plt.yticks(ticks=np.arange(0, df["pose_x"].max(), step=0.3))
 
         plt.subplot(1, 2, 2)
@@ -56,14 +56,14 @@ class DrawGrapNode(Node):
 
         plt.legend(loc='upper right', fontsize=10, shadow=True, framealpha=1.0)
 
-        plt.text(0.05, 0.95, f"RMSE: {rmse_y}", 
+        plt.text(-0.05, 1.12, f"RMSE: {rmse_y}", 
          transform=plt.gca().transAxes, fontsize=10, color='black', 
          ha='left', va='top', bbox=dict(facecolor='white', alpha=0.7, edgecolor='black'))
 
         plt.title(f'{name} yöntemi y ekseni hareket grafiği', fontsize=14, fontweight="bold")
         plt.grid(True, linestyle="--", alpha=0.7)
 
-        plt.xticks(ticks=np.arange(0, df["time"].max(), step=1.0))
+        plt.xticks(ticks=np.arange(0, df["time"].max(), step=2.0))
         plt.yticks(ticks=np.arange(0, df["pose_y"].max(), step=0.3))
     
         plt.show()

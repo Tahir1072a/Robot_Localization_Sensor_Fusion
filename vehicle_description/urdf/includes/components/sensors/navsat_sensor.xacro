@@ -5,12 +5,12 @@
     <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/navsat_gazebo.xacro" />
     <xacro:include filename="$(find vehicle_description)/urdf/includes/components/sensors/vn200.xacro" />
 
-    <xacro:macro name="navsat_sensor" params="sensor_type name topic_ns:=imu parent *origin">
+    <xacro:macro name="navsat_sensor" params="sensor_type name topic_ns:=navsat parent *origin">
 
         <xacro:if value="${sensor_type == 'vn_200'}">
-            <xacro:vn_100 name="${name}" topic_ns="${topic_ns}" parent="${parent}">
+            <xacro:vn_200 name="${name}" topic_ns="${topic_ns}" parent="${parent}">
                 <xacro:insert_block name="origin"/>
-            </xacro:vn_100>
+            </xacro:vn_200>
         </xacro:if>
         
     </xacro:macro>

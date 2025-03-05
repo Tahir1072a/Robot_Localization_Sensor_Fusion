@@ -7,7 +7,7 @@
         <gazebo reference="${navsat_name}">
             <sensor name="${navsat_name}" type="navsat">
                 <always_on>1</always_on>
-                <pose>0 0 0.05 0 0 0</pose> 
+                <pose>0 0 0.05 0 0 0</pose>
                 <update_rate>10</update_rate> <!-- Güncelleme frekansı (Hz) -->
                 <topic>${topic_ns}/fix</topic>
                 
@@ -16,7 +16,7 @@
                         <horizontal>
                             <noise type="gaussian">
                                 <mean>0.0</mean>
-                                <stddev>1.0</stddev> 
+                                <stddev>1.0</stddev>
                             </noise>
                         </horizontal>
                         <vertical>
