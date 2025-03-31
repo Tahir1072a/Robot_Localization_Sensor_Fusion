@@ -31,7 +31,7 @@ def generate_launch_description():
     ekf_node = Node(
         package="robot_localization",
         executable="ekf_node",
-        name="w_encoder_multiple_imu_basic_mean",
+        name="all_multiple_imu_basic_mean_2",
         output='screen',
         parameters=[os.path.join(vehicle_localization_dir, "config", "ekf_all.yaml")]
     )
